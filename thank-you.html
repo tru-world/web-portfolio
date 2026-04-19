@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank you - Myanh Truong</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background-color: #faf9f4; scrollbar-gutter: stable; }
+    @view-transition { navigation: auto; }
+    @keyframes vt-fade-out { to { opacity: 0; } }
+    ::view-transition-old(root) { animation: 0.2s ease both vt-fade-out; }
+    ::view-transition-new(root) { animation: none; }
+
+    :root {
+      --bg:        #faf9f4;
+      --default:   #30312e;
+      --sub-text:  #5e5f5b;
+      --neutral-20:#e3e3de;
+      --green-70:  #546347;
+      --green-80:  #3d4b31;
+    }
+    body {
+      background: var(--bg); color: var(--default);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px; line-height: 24px;
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250, 249, 244, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--neutral-20);
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto;
+      padding: 20px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: 'Manrope', sans-serif; font-weight: 800;
+      font-size: 18px; color: var(--default);
+      text-decoration: none; letter-spacing: -0.01em;
+    }
+    .nav-links { list-style: none; display: flex; gap: 48px; }
+    .nav-links a {
+      font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--sub-text); text-decoration: none;
+      padding-bottom: 4px;
+    }
+    .nav-links a.active {
+      color: var(--default);
+      border-bottom: 2px solid var(--green-70);
+    }
+    .main { flex: 1 0 auto; display: flex; align-items: center; justify-content: center; padding: 128px 48px 80px; }
+    .ty-card { max-width: 560px; text-align: center; }
+    .ty-eyebrow {
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--sub-text); margin-bottom: 20px;
+    }
+    .ty-title {
+      font-family: 'Manrope', sans-serif; font-weight: 800;
+      font-size: 56px; line-height: 1.1; color: var(--default);
+      margin-bottom: 20px; letter-spacing: -0.02em;
+    }
+    .ty-desc {
+      font-size: 17px; line-height: 1.55; color: var(--sub-text);
+      margin-bottom: 36px;
+    }
+    .ty-btn {
+      display: inline-block;
+      padding: 14px 28px; font-size: 15px; font-weight: 600;
+      background: var(--green-80); color: var(--bg);
+      border-radius: 10px; text-decoration: none;
+      transition: background 0.15s;
+    }
+    .ty-btn:hover { background: var(--green-70); }
+    .footer { flex-shrink: 0; border-top: 1px solid var(--neutral-20); }
+    .footer-inner {
+      max-width: 1280px; margin: 0 auto;
+      padding: 28px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy { font-size: 13px; color: var(--sub-text); }
+    .footer-links { list-style: none; display: flex; gap: 24px; }
+    .footer-links a {
+      font-size: 13px; color: var(--sub-text); text-decoration: none;
+    }
+    .footer-links a:hover { color: var(--default); }
+    @media (max-width: 720px) {
+      .ty-title { font-size: 40px; }
+      .nav-inner, .footer-inner { padding: 20px 24px; }
+      .main { padding: 96px 24px 64px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Myanh Truong</a>
+      <ul class="nav-links">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="ty-card">
+      <div class="ty-eyebrow">Message received</div>
+      <h1 class="ty-title">Thanks for reaching out.</h1>
+      <p class="ty-desc">Your message is on its way to my inbox. I'll get back to you within a few days — usually sooner.</p>
+      <a class="ty-btn" href="index.html">Back to portfolio</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 Myanh Truong - Principal Product Designer.</p>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/myanh-truong-56998347" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://dribbble.com/Meeang/shots" target="_blank" rel="noopener">Dribbble</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
