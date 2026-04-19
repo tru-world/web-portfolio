@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Myanh Truong - Principal Product Designer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background-color: #faf9f4; scrollbar-gutter: stable; }
+
+    /* ── Design Tokens ───────────────────────────────── */
+    :root {
+      --bg:          #faf9f4;
+      --default:     #30312e;
+      --sub-text:    #5e5f5b;
+      --tags:        #6d7c5e;
+      --neutral-10:  #f2f1ec;
+      --neutral-20:  #e3e3de;
+      --green-40:    #a1b090;
+      --green-60:    #6d7c5e;
+      --green-70:    #546347;
+      --green-80:    #3d4b31;
+      --neutral:     #f8f7f2;
+      --card-1:      #e8e9e2;
+      --card-2:      #f4f4ee;
+      --card-3:      #eeeee8;
+      --cta-bg:      #d8e8c5;
+    }
+
+    /* ── View Transitions ────────────────────────────── */
+    @view-transition {
+      navigation: auto;
+    }
+
+    /* Root: fade old page out so the scroll-position jump is hidden.
+       New page stays fully visible behind the fading screenshot. */
+    @keyframes vt-fade-out { to { opacity: 0; } }
+
+    ::view-transition-old(root) {
+      animation: 0.2s ease both vt-fade-out;
+    }
+    ::view-transition-new(root) {
+      animation: none; /* new page is immediately opaque behind the fade */
+    }
+
+    /* Shared element morph */
+    ::view-transition-group(ticketed-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+    ::view-transition-image-pair(ticketed-hero) {
+      isolation: isolate;
+    }
+    ::view-transition-old(ticketed-hero),
+    ::view-transition-new(ticketed-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    ::view-transition-group(systems-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+    ::view-transition-image-pair(systems-hero) {
+      isolation: isolate;
+    }
+    ::view-transition-old(systems-hero),
+    ::view-transition-new(systems-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    ::view-transition-group(group-experts-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+    ::view-transition-image-pair(group-experts-hero) {
+      isolation: isolate;
+    }
+    ::view-transition-old(group-experts-hero),
+    ::view-transition-new(group-experts-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--default);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      line-height: 24px;
+      overflow-x: hidden;
+    }
+
+    /* ── Utility ─────────────────────────────────────── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ── Top Nav ─────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(250, 249, 244, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--neutral-20);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--default);
+      text-decoration: none;
+      line-height: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--sub-text);
+      text-decoration: none;
+      line-height: 16px;
+      padding-bottom: 6px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--default); }
+
+    .nav-links a.active {
+      color: var(--default);
+      border-bottom: 2px solid var(--green-60);
+    }
+
+    /* Hamburger - hidden on desktop */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--default);
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    /* ── Main Content ────────────────────────────────── */
+    .main-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 128px;
+      padding-top: 128px;
+    }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 768px;
+    }
+
+    .hero-tagline {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--tags);
+      line-height: 16px;
+    }
+
+    .hero-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(48px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -1.8px;
+      color: var(--default);
+    }
+
+    .hero-body {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--sub-text);
+      max-width: 674px;
+      padding-top: 8px;
+    }
+
+    /* ── Gallery (all work sections) ────────────────── */
+    .gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 128px;
+    }
+
+    /* ── Company Section ─────────────────────────────── */
+    .company-section {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--neutral-20);
+    }
+
+    .section-company {
+      font-family: 'Manrope', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 40px;
+      color: var(--default);
+    }
+
+    .section-period {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      color: var(--sub-text);
+      line-height: 20px;
+      white-space: nowrap;
+    }
+
+    /* ── Project Card ────────────────────────────────── */
+    .project-card {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .card-image-wrap {
+      border-radius: 32px;
+      overflow: hidden;
+      padding: 8px;
+      flex-shrink: 0;
+    }
+
+    .card-image-inner {
+      border-radius: 28px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-image-inner img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+      transition: transform 0.5s cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    .project-card:hover .card-image-inner img {
+      transform: scale(1.2);
+    }
+
+    .card-meta {
+      display: flex;
+      gap: 64px;
+      align-items: flex-start;
+    }
+
+    .card-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.75px;
+      line-height: 36px;
+      color: var(--default);
+    }
+
+    .card-desc {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--default);
+    }
+
+    .card-link-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .project-card a { cursor: pointer; }
+
+    /* ── 12-col Grid: Toast Section ──────────────────── */
+    .toast-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 48px;
+    }
+
+    .toast-grid .col-8 { grid-column: span 8; }
+    .toast-grid .col-4 { grid-column: span 4; align-self: flex-end; }
+
+    /* Sub-card (smaller) */
+    .sub-card {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .sub-card-image {
+      border-radius: 32px;
+      overflow: hidden;
+      padding: 8px;
+    }
+
+    .sub-card-image-inner {
+      border-radius: 28px;
+      overflow: hidden;
+    }
+
+    .sub-card-image-inner img {
+      display: block;
+      width: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    .sub-card:hover .sub-card-image-inner img {
+      transform: scale(1.2);
+    }
+
+    .sub-card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sub-card-title-lg {
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      color: var(--default);
+    }
+
+    .sub-card-title-sm {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      line-height: 28px;
+      color: var(--default);
+    }
+
+    .sub-card-desc {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--default);
+    }
+
+    /* ── 2-col Grid: Independent Studies ─────────────── */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 48px;
+    }
+
+    /* Tags row: Conceptual • App • Desc */
+    .tag-row {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+    }
+
+    .tag-row .tag-bullet { color: var(--green-40); }
+    .tag-row .tag-text   { color: var(--sub-text); }
+
+    /* ── CTA Section ─────────────────────────────────── */
+    .cta-section {
+      background: var(--cta-bg);
+      border-radius: 48px;
+      padding: 80px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      right: -80px;
+      width: 320px;
+      height: 320px;
+      border-radius: 9999px;
+      background: #556448;
+      opacity: 0.05;
+      pointer-events: none;
+    }
+
+    .cta-text { flex: 1; display: flex; flex-direction: column; gap: 16px; }
+
+    .cta-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 40px;
+      color: var(--green-80);
+      white-space: nowrap;
+    }
+
+    .cta-body {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--green-80);
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 40px;
+      border-radius: 9999px;
+      background: var(--green-70);
+      color: var(--neutral);
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      text-decoration: none;
+      white-space: nowrap;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+      transition: background 0.2s, transform 0.15s;
+      flex-shrink: 0;
+    }
+
+    .cta-btn:hover {
+      background: var(--green-80);
+      transform: translateY(-1px);
+    }
+
+    /* ── Footer ──────────────────────────────────────── */
+    .footer {
+      background: var(--neutral-10);
+      border-radius: 48px 48px 0 0;
+      margin-top: 80px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 64px 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer-copy {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--default); }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 900px) {
+      .container { padding: 0 24px; }
+
+      .nav-inner { padding: 20px 24px; }
+
+      .nav-links { display: none; flex-direction: column; gap: 24px; position: absolute;
+        top: 100%; left: 0; right: 0; background: rgba(250,249,244,0.97);
+        backdrop-filter: blur(12px); border-bottom: 1px solid var(--neutral-20);
+        padding: 24px 32px; }
+
+      .nav-links.open { display: flex; }
+
+      .nav-toggle { display: flex; }
+
+      .main-inner { gap: 80px; padding-top: 96px; }
+
+      .hero-heading { font-size: clamp(36px, 8vw, 56px); letter-spacing: -1px; }
+
+      .gallery { gap: 80px; }
+
+      .section-company { font-size: 28px; }
+
+      .card-title { font-size: 24px; }
+
+      .card-meta { gap: 24px; }
+
+      .toast-grid { grid-template-columns: 1fr; }
+      .toast-grid .col-8 { grid-column: span 1; }
+      .toast-grid .col-4 { grid-column: span 1; align-self: auto; }
+
+      .two-col-grid { grid-template-columns: 1fr; }
+
+      .cta-section { flex-direction: column; padding: 48px 32px; gap: 32px; }
+      .cta-heading { font-size: 28px; white-space: normal; }
+      .cta-btn { width: 100%; text-align: center; }
+
+      .footer-inner { flex-direction: column; gap: 24px; align-items: flex-start; padding: 48px 24px; }
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 0 20px; }
+      .main-inner { padding-top: 64px; gap: 64px; }
+      .hero-heading { font-size: 36px; }
+      .gallery { gap: 64px; }
+      .section-header { flex-direction: column; gap: 4px; }
+      .card-meta { flex-direction: column; gap: 16px; }
+      .card-link-icon { display: none; }
+      .cta-section { padding: 40px 24px; border-radius: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ─────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Myanh Truong</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#work" class="active">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Page Body ──────────────────────────────────── -->
+  <div class="main">
+    <div class="main-inner container" id="work">
+
+      <!-- Hero -->
+      <section class="hero">
+        <p class="hero-tagline">Principal Product Designer</p>
+        <h1 class="hero-heading">Make it make sense.<br>Then make it scale.</h1>
+        <p class="hero-body">Designing connected systems across consumer and business products-focused on clarity, usability, and scale.</p>
+      </section>
+
+      <!-- Gallery -->
+      <div class="gallery">
+
+        <!-- ── Toast Inc. ─────────────────────────────── -->
+        <section class="company-section" aria-label="Toast Inc.">
+          <div class="section-header">
+            <h2 class="section-company">Toast Inc.</h2>
+            <span class="section-period">2022 - Present</span>
+          </div>
+
+          <!-- Featured: Ticketed Events -->
+          <article class="project-card">
+            <a href="ticketed-events.html" style="display:block; text-decoration:none; color:inherit;">
+              <div class="card-image-wrap" style="background: var(--card-1);">
+                <div class="card-image-inner" id="ticketed-thumb" style="height: 500px; view-transition-name: ticketed-hero;">
+                  <img
+                    src="images/ticketed-events.png"
+                    alt="Ticketed events project - booking system UI"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </a>
+            <div class="card-meta">
+              <div class="card-text">
+                <h3 class="card-title">Ticketed events</h3>
+                <p class="card-desc">Building a flexible booking system for events, experiences, and prepaid dining, beyond traditional reservations.</p>
+              </div>
+            </div>
+          </article>
+
+          <!-- 12-col: Table's Marketplace + Designing for Scale -->
+          <div class="toast-grid">
+            <!-- Col 8 - Table's marketplace -->
+            <article class="sub-card col-8">
+              <a href="tables-marketplace.html" style="display:block; text-decoration:none; color:inherit;">
+                <div class="sub-card-image" style="background: var(--card-2);">
+                  <div class="sub-card-image-inner" id="tables-thumb" style="view-transition-name: tables-hero;">
+                    <img
+                      src="images/tables-marketplace.png"
+                      alt="Table's marketplace UI"
+                      loading="lazy"
+                      style="height: 426px;"
+                    />
+                  </div>
+                </div>
+              </a>
+              <div class="sub-card-meta">
+                <h3 class="sub-card-title-lg">Table's marketplace</h3>
+                <p class="sub-card-desc">Designing a consumer marketplace to drive demand and scale a two-sided restaurant platform.</p>
+              </div>
+            </article>
+
+            <!-- Col 4 - Designing for scale -->
+            <article class="sub-card col-4">
+              <a href="designing-for-scale.html" style="display:block; text-decoration:none; color:inherit;">
+                <div class="sub-card-image" style="background: var(--card-3);">
+                  <div class="sub-card-image-inner" id="systems-thumb" style="view-transition-name: systems-hero; position:relative; overflow:hidden;">
+                    <div style="position:absolute;inset:0;background:var(--green-40);"></div>
+                    <img
+                      src="images/designing-for-scale.png"
+                      alt="One platform, two systems - design system work"
+                      loading="lazy"
+                      style="height: 347px; position:relative;"
+                    />
+                  </div>
+                </div>
+              </a>
+              <div class="sub-card-meta">
+                <h3 class="sub-card-title-sm">One platform, two systems</h3>
+                <p class="sub-card-desc">Two products, completely different users, zero shared foundation. Here's how I built the systems that tied it all together.</p>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Facebook (Meta) ────────────────────────── -->
+        <section class="company-section" aria-label="Facebook (Meta)">
+          <div class="section-header">
+            <h2 class="section-company">Facebook (aka Meta)</h2>
+            <span class="section-period">2020 - 2021</span>
+          </div>
+
+          <article class="project-card">
+            <a href="group-experts.html" style="display:block; text-decoration:none; color:inherit;">
+              <div class="card-image-wrap" style="background: #d6e4f5;">
+                <div class="card-image-inner" id="group-experts-thumb" style="height: 500px; view-transition-name: group-experts-hero;">
+                  <img
+                    src="images/group-experts/hero.png"
+                    alt="Group Experts feature - Facebook community experts"
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </a>
+            <div class="card-meta">
+              <div class="card-text">
+                <h3 class="card-title">Group Experts</h3>
+                <p class="card-desc">Connecting experts to the communities that need them, and giving group admins the tools to find them.</p>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- ── Independent Studies ────────────────────── -->
+        <section class="company-section" aria-label="Independent studies" style="display: none;">
+          <div class="section-header">
+            <h2 class="section-company">Independent studies</h2>
+            <span class="section-period">Personal &amp; Conceptual</span>
+          </div>
+
+          <div class="two-col-grid">
+            <!-- Adorn -->
+            <article class="sub-card">
+              <div class="sub-card-image" style="background: var(--card-2);">
+                <div class="sub-card-image-inner">
+                  <img
+                    src="images/adorn.png"
+                    alt="Adorn - personalized beauty shopping app"
+                    loading="lazy"
+                    style="height: 414px;"
+                  />
+                </div>
+              </div>
+              <div class="sub-card-meta">
+                <h3 class="sub-card-title-lg">Adorn</h3>
+                <div class="tag-row">
+                  <span class="tag-text">Conceptual</span>
+                  <span class="tag-bullet">•</span>
+                  <span class="tag-text">App</span>
+                  <span class="tag-bullet">•</span>
+                  <span class="tag-text">A personalized beauty shopping experience.</span>
+                </div>
+              </div>
+            </article>
+
+            <!-- Parkin -->
+            <article class="sub-card">
+              <div class="sub-card-image" style="background: #fff; border: 1px solid rgba(177,179,171,0.1); padding: 9px;">
+                <div class="sub-card-image-inner">
+                  <img
+                    src="images/parkin.png"
+                    alt="Parkin - parking experience for Meta employees"
+                    loading="lazy"
+                    style="height: 413px;"
+                  />
+                </div>
+              </div>
+              <div class="sub-card-meta">
+                <h3 class="sub-card-title-lg">Parkin</h3>
+                <div class="tag-row">
+                  <span class="tag-text">Conceptual</span>
+                  <span class="tag-bullet">•</span>
+                  <span class="tag-text">App</span>
+                  <span class="tag-bullet">•</span>
+                  <span class="tag-text">A parking experience for Meta employees.</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+      </div><!-- /gallery -->
+
+      <!-- ── CTA ──────────────────────────────────────── -->
+      <section class="cta-section" aria-label="Contact CTA">
+        <div class="cta-text">
+          <h2 class="cta-heading">Simple. Useful. Intentional.</h2>
+          <p class="cta-body">Open to Principal, Staff, or Lead product design roles.</p>
+        </div>
+        <a class="cta-btn" href="Myanh's Resume (Updated).pdf" download>Download resume</a>
+      </section>
+
+    </div><!-- /main-inner -->
+  </div><!-- /main -->
+
+  <!-- ── Footer ─────────────────────────────────────── -->
+  <footer class="footer" id="contact">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2024 Myanh Truong - Principal Product Designer.</p>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/myanh-truong-56998347" target="_blank" rel="noopener" aria-label="LinkedIn profile">LinkedIn</a></li>
+        <li><a href="https://dribbble.com/Meeang/shots" target="_blank" rel="noopener" aria-label="Dribbble profile">Dribbble</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    // Reset zoom before the view-transition snapshot so departing element is always scale(1).
+    [['ticketed-events.html', 'ticketed-thumb'], ['tables-marketplace.html', 'tables-thumb'], ['designing-for-scale.html', 'systems-thumb'], ['group-experts.html', 'group-experts-thumb']].forEach(([href, id]) => {
+      document.querySelectorAll(`a[href="${href}"]`).forEach(link => {
+        link.addEventListener('click', () => {
+          const thumb = document.getElementById(id);
+          if (thumb) { const img = thumb.querySelector('img'); if (img) img.style.transform = 'scale(1)'; }
+        });
+      });
+    });
+
+    // Mobile nav toggle
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+
+    toggle.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+
+    // Close nav when a link is clicked
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id], div[id]');
+    const navAnchors = document.querySelectorAll('.nav-links a');
+
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          navAnchors.forEach(a => a.classList.remove('active'));
+          const match = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+          if (match) match.classList.add('active');
+        }
+      });
+    }, { threshold: 0.4 });
+
+    document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
+  </script>
+
+</body>
+</html>

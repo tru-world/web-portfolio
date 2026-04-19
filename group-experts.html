@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Group Experts - Myanh Truong</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background-color: #faf9f4; scrollbar-gutter: stable; }
+
+    /* ── Design Tokens ────────────────────────────────── */
+    :root {
+      --bg:          #faf9f4;
+      --default:     #30312e;
+      --sub-text:    #5e5f5b;
+      --tags:        #6d7c5e;
+      --neutral-10:  #f2f1ec;
+      --neutral-20:  #e3e3de;
+      --neutral-70:  #5e5f5b;
+      --green-20:    #d8e8c5;
+      --green-60:    #6d7c5e;
+      --green-70:    #546347;
+      --green-80:    #3d4b31;
+      --blue-20:     #d6e4f5;
+      --brown-20:    #e9e2d3;
+      --neutral:     #f8f7f2;
+      --section-bg:  #f4f4ee;
+    }
+
+    /* ── View Transitions ────────────────────────────── */
+    @view-transition {
+      navigation: auto;
+    }
+
+    @keyframes vt-fade-out { to { opacity: 0; } }
+    ::view-transition-old(root) { animation: 0.2s ease both vt-fade-out; }
+    ::view-transition-new(root) { animation: none; }
+
+    ::view-transition-group(group-experts-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+    ::view-transition-image-pair(group-experts-hero) {
+      isolation: isolate;
+    }
+    ::view-transition-old(group-experts-hero),
+    ::view-transition-new(group-experts-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--default);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      line-height: 24px;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ──────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(250, 249, 244, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--neutral-20);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--default);
+      text-decoration: none;
+      line-height: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--sub-text);
+      text-decoration: none;
+      line-height: 16px;
+      padding-bottom: 6px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--default); }
+    .nav-links a.active {
+      color: var(--default);
+      border-bottom: 2px solid var(--green-60);
+    }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--default);
+      border-radius: 2px;
+    }
+
+    /* ── Shared Container ─────────────────────────────── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .content-col {
+      max-width: 1184px;
+      margin: 0 auto;
+    }
+
+    /* ── Main ─────────────────────────────────────────── */
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 128px;
+      gap: 64px;
+    }
+
+    /* ── Hero reveal animation ───────────────────────── */
+    .hero-text-outer {
+      display: grid;
+      grid-template-rows: 0fr;
+      animation: hero-row-open 0.4s cubic-bezier(0.25, 0, 0, 1) 0.1s both;
+    }
+    @keyframes hero-row-open {
+      to { grid-template-rows: 1fr; }
+    }
+
+    .hero-text {
+      overflow: hidden;
+      min-height: 0;
+      animation: hero-text-enter 0.35s ease 0.15s both;
+    }
+    @keyframes hero-text-enter {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-gap { height: 40px; flex-shrink: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-text-outer { animation: none; grid-template-rows: 1fr; }
+      .hero-text { animation: none; }
+    }
+
+    /* ── Hero Section ─────────────────────────────────── */
+    .hero-section {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 1280px;
+      padding: 0 48px;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .tag-pill {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--neutral-70);
+      line-height: 16px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+    }
+
+    .tag-pill-brown  { background: var(--brown-20); }
+    .tag-pill-neutral { background: var(--neutral-20); }
+
+    .hero-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(56px, 7.5vw, 96px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2.4px;
+      color: var(--default);
+      max-width: 896px;
+    }
+
+    .hero-subtitle {
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 32px;
+      color: var(--sub-text);
+      max-width: 720px;
+    }
+
+    .hero-image {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #eeeee8;
+    }
+
+    .hero-image img {
+      display: block;
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+    }
+
+    /* ── Metadata Strip ───────────────────────────────── */
+    .metadata-strip {
+      width: 100%;
+      max-width: 1280px;
+      padding: 49px 48px;
+      border-top: 1px solid #eeeee8;
+      border-bottom: 1px solid #eeeee8;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+
+    .meta-item { display: flex; flex-direction: column; }
+
+    .meta-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--tags);
+      line-height: 16px;
+    }
+
+    .meta-value {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      color: var(--default);
+    }
+
+    .meta-sub {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+    }
+
+    /* ── Case Study Text + Visual ─────────────────────── */
+    .case-study-row {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 1280px;
+      padding: 32px 48px 0;
+    }
+
+    .case-study-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+      min-width: 0;
+    }
+
+    .cs-block {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .cs-rule {
+      width: 48px;
+      height: 4px;
+      background: var(--green-70);
+      border-radius: 9999px;
+      flex-shrink: 0;
+    }
+
+    .cs-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.75px;
+      line-height: 36px;
+      color: var(--default);
+    }
+
+    .cs-body {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 29.25px;
+      color: var(--sub-text);
+    }
+
+    .case-study-visual {
+      width: 664px;
+      height: 641px;
+      flex-shrink: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      background: var(--blue-20);
+    }
+
+    .case-study-visual img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+
+    /* ── Design Execution Section ─────────────────────── */
+    .execution-section {
+      background: var(--section-bg);
+      width: 100%;
+      padding: 192px 0 128px;
+    }
+
+    .execution-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .section-intro { display: flex; flex-direction: column; gap: 23px; }
+
+    .section-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      line-height: 1;
+      color: var(--default);
+    }
+
+    .section-subheading {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 32.5px;
+      color: var(--sub-text);
+      max-width: 732px;
+    }
+
+    /* ── Deliverable Blocks ───────────────────────────── */
+    .deliverable-full {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 96px;
+    }
+
+    .deliverable-card {
+      background: var(--bg);
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 24px;
+    }
+
+    .deliverable-card-lg {
+      padding: 24px;
+    }
+
+    .deliverable-img-wrap {
+      border-radius: 32px;
+      overflow: hidden;
+      width: 100%;
+      height: 472px;
+      position: relative;
+    }
+
+    /* Half-width cards scale proportionally (≈ 520×472 on desktop) */
+    .deliverable-half .deliverable-img-wrap {
+      height: auto;
+      aspect-ratio: 11 / 10;
+    }
+
+    .deliverable-img-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 32px;
+    }
+
+    /* Gif wrapper - sizes to image content */
+    .gif-wrap {
+      position: absolute;
+      top: 24px;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 100%;
+      line-height: 0;
+    }
+
+    .gif-wrap img {
+      position: static;
+      inset: auto;
+      width: auto;
+      height: 100%;
+      max-width: 100%;
+      object-fit: unset;
+      border-radius: 0;
+    }
+
+    .img-bg {
+      position: absolute;
+      inset: 0;
+      border-radius: 32px;
+    }
+
+    .deliverable-meta {
+      padding: 20px 48px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .deliverable-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      color: var(--default);
+    }
+
+    .deliverable-desc {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--sub-text);
+    }
+
+    .deliverable-tags {
+      display: flex;
+      gap: 16px;
+      padding-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .deliverable-tag {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--tags);
+      line-height: 16px;
+    }
+
+    /* Two-col deliverable grid */
+    .deliverable-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      padding: 0 48px;
+    }
+
+    .deliverable-half {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .deliverable-half.offset-down { padding-top: 96px; }
+    .deliverable-half.offset-up   { padding-bottom: 96px; }
+
+    /* ── Next Project ─────────────────────────────────── */
+    .next-section {
+      width: 100%;
+      padding: 193px 24px 128px;
+      border-top: 1px solid #e8e9e2;
+    }
+
+    .next-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .next-label {
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 32px;
+      color: var(--tags);
+      text-align: center;
+    }
+
+    .next-link {
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+      align-items: center;
+      width: 100%;
+      max-width: 866px;
+      text-decoration: none;
+    }
+
+    .next-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2.4px;
+      color: #30332e;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+
+    .next-link:hover .next-title { opacity: 0.7; }
+
+    .next-preview {
+      width: 100%;
+      max-width: 1024px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #eeeee8;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+
+    .next-preview img {
+      display: block;
+      width: 100%;
+      height: 439px;
+      object-fit: cover;
+    }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer {
+      background: var(--neutral-10);
+      border-radius: 48px 48px 0 0;
+      width: 100%;
+      margin-top: 80px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 64px 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer-copy {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--default); }
+
+    /* ── Responsive ───────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .case-study-row { flex-direction: column; padding: 32px 48px 0; }
+      .case-study-visual { width: 100%; height: 400px; }
+      .deliverable-pair { grid-template-columns: 1fr; padding: 0; }
+      .deliverable-half.offset-down,
+      .deliverable-half.offset-up { padding-top: 0; padding-bottom: 0; }
+    }
+
+    @media (max-width: 900px) {
+      .gif-wrap { }
+      .nav-inner { padding: 20px 24px; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 24px;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(250,249,244,0.97);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--neutral-20);
+        padding: 24px 32px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+
+      .main { padding-top: 80px; gap: 48px; }
+      .hero-section { padding: 0 24px; }
+      .hero-title { font-size: clamp(40px, 8vw, 72px); letter-spacing: -1.5px; }
+      .hero-subtitle { font-size: 18px; }
+      .hero-image img { height: 300px; }
+      .metadata-strip { grid-template-columns: repeat(2, 1fr); padding: 32px 24px; }
+      .case-study-row { padding: 32px 24px 0; }
+      .execution-section { padding: 96px 0 64px; }
+      .execution-inner { padding: 0 24px; }
+      .deliverable-full { padding-bottom: 48px; }
+      .deliverable-meta { padding: 16px 24px 0; }
+      .next-section { padding: 96px 24px 64px; }
+      .next-title { font-size: clamp(36px, 8vw, 72px); }
+      .next-preview img { height: 280px; }
+      .footer-inner { flex-direction: column; gap: 24px; align-items: flex-start; padding: 48px 24px; }
+      .deliverable-card { padding: 8px; }
+      .deliverable-half .deliverable-img-wrap { height: auto; aspect-ratio: 11 / 10; }
+    }
+    @media (max-width: 470px) {
+      .deliverable-half .deliverable-img-wrap { height: auto; aspect-ratio: 1 / 1; }
+      .deliverable-full .deliverable-img-wrap { height: auto; aspect-ratio: 16 / 9; }
+    }
+
+    @media (max-width: 600px) {
+      .metadata-strip { grid-template-columns: 1fr; }
+      .case-study-visual { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ──────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Myanh Truong</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#work" class="active">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Page ─────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="hero-text-outer">
+        <div class="hero-text">
+          <div class="hero-tags">
+            <span class="tag-pill tag-pill-brown">Lead Product Designer</span>
+            <span class="tag-pill tag-pill-neutral">Facebook Groups</span>
+          </div>
+          <h1 class="hero-title" style="margin-top: 24px;">Group Experts</h1>
+          <p class="hero-subtitle" style="margin-top: 24px;">Connecting experts to the communities that need them, and giving group admins the tools to find them.</p>
+          <div class="hero-gap" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="hero-image" style="background: #d6e4f5; view-transition-name: group-experts-hero;">
+        <img src="images/group-experts/hero.png" alt="Group Experts - Facebook community experts hero" />
+      </div>
+    </section>
+
+    <!-- Metadata strip -->
+    <div class="metadata-strip">
+      <div class="meta-item">
+        <span class="meta-label">My Role</span>
+        <span class="meta-value">Lead Product Designer</span>
+        <span class="meta-sub">Strategy, UX, Visual ID, Research</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Duration</span>
+        <span class="meta-value">12 weeks</span>
+        <span class="meta-sub">Launch: 2021</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Industry</span>
+        <span class="meta-value">Social Media</span>
+        <span class="meta-sub">Facebook</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Key Outcome</span>
+        <span class="meta-value">50% opt in during phase 1</span>
+        <span class="meta-sub">Launched as part of Facebook's Expert initiative · 2021</span>
+      </div>
+    </div>
+
+    <!-- Challenge + Solution / Side visual -->
+    <div class="case-study-row">
+      <div class="case-study-text">
+
+        <div class="cs-block">
+          <div class="cs-rule"></div>
+          <h2 class="cs-heading">The Challenge</h2>
+          <p class="cs-body">Facebook had millions of interest-based communities but no way to connect the right experts to the groups that needed them. Experts didn't know where to find relevant groups, and admins had no way to identify or recruit qualified people. The value exchange between both sides was completely invisible.</p>
+        </div>
+
+        <div class="cs-block">
+          <div class="cs-rule"></div>
+          <h2 class="cs-heading">The Solution</h2>
+          <p class="cs-body">Built a 0→1 system that let experts signal their expertise and opt into discovery, while giving group admins the tools to find and invite the right people - creating a two-sided connection that didn't exist before.</p>
+        </div>
+
+      </div>
+
+      <div class="case-study-visual">
+        <img src="https://www.figma.com/api/mcp/asset/62939163-cf54-4a46-a97a-4fcfc45e63a3" alt="Group Experts case study visuals" />
+      </div>
+    </div>
+
+    <!-- Design Execution -->
+    <section class="execution-section" aria-label="Design execution">
+      <div class="execution-inner">
+
+        <div class="section-intro">
+          <h2 class="section-heading">Designing the experience</h2>
+          <p class="section-subheading">This wasn't a single flow - it required designing across two distinct user sides, each with different motivations, mental models, and entry points.</p>
+        </div>
+
+        <!-- ── Expert side ── -->
+        <div>
+          <!-- Full-width: Expert education & opt-in -->
+          <div class="deliverable-full">
+            <div class="deliverable-card">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background: var(--green-20);"></div>
+                <img src="https://www.figma.com/api/mcp/asset/7cc0b181-be06-4a75-8ebf-d46c445f8f05" alt="Expert education and opt-in flow" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">Expert education &amp; opt-in</h3>
+              <p class="deliverable-desc">Experts needed to understand why this was worth their time before committing. Identified users see a targeted prompt in their newsfeed explaining the value, then complete a short application - selecting their expertise topics to become discoverable by group admins.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">Mobile</span>
+                <span class="deliverable-tag">Consumer experience</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2-col: Contextual entry point + Lightweight application -->
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--green-20);"></div>
+                  <div class="gif-wrap"><img src="images/group-experts/group-experts-entry.gif" alt="Contextual entry point - newsfeed card" /></div>
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Contextual entry point</h3>
+                <p class="deliverable-desc">A newsfeed card surfaces to relevant users at the right moment, explaining the value before asking for anything.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--green-20);"></div>
+                  <div class="gif-wrap"><img src="images/group-experts/application.gif" alt="Lightweight application flow" /></div>
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Lightweight application</h3>
+                <p class="deliverable-desc">A short opt-in flow - just expertise topics and a brief description - low friction, high signal for admins.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Admin side ── -->
+        <div>
+          <!-- Full-width: Admin discovery + invite -->
+          <div class="deliverable-full">
+            <div class="deliverable-card deliverable-card-lg">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background: var(--blue-20);"></div>
+                <img src="https://www.figma.com/api/mcp/asset/cc9264e1-a028-4a92-bdb8-c9c2eadf4887" alt="Admin discovery and invite flow" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">Admin discovery + invite</h3>
+              <p class="deliverable-desc">Once experts opt in, admins needed a simple way to find and invite the right people to their groups - filtered by topic relevance so the right matches actually happen.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">Mobile</span>
+                <span class="deliverable-tag">B2B-adjacent tools</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2-col: Topic-based search + Direct invite flow -->
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap" style="background: var(--blue-20);">
+                  <div class="img-bg" style="background: var(--blue-20);"></div>
+                  <div class="gif-wrap"><img src="images/group-experts/Invite-flow.gif" alt="Admin invite flow" /></div>
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Topic-based search</h3>
+                <p class="deliverable-desc">Admins search by topic to surface relevant experts, reducing guesswork and cold outreach.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--blue-20);"></div>
+                  <img src="images/group-experts/direct-invite-flow.png" alt="Direct invite flow" style="object-fit: contain;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Direct invite flow</h3>
+                <p class="deliverable-desc">One tap to invite, keeping the workflow fast and reducing drop-off between discovery and action.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Process ── -->
+        <div>
+          <!-- Full-width: How we got there -->
+          <div class="deliverable-full">
+            <div class="deliverable-card deliverable-card-lg">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background: var(--neutral-20);"></div>
+                <img src="images/group-experts/process-iteration.png" alt="Process and iteration work" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">How we got there</h3>
+              <p class="deliverable-desc">Building a 0→1 experience across multiple Facebook products meant there was no existing playbook to follow. Every decision - from entry points to application structure - required cross-functional alignment and multiple rounds of iteration before we had something worth shipping.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">0→1 Product Design</span>
+                <span class="deliverable-tag">Cross-functional Collaboration</span>
+                <span class="deliverable-tag">Mobile</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2-col: Cross-product coordination + From ideas to MVP -->
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--neutral-20);"></div>
+                  <img src="images/group-experts/cross-product-coordination.png" alt="Cross-product coordination" style="object-fit: cover;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Cross-product coordination</h3>
+                <p class="deliverable-desc">This experience touched Profile, Newsfeed, Groups, and Privacy, requiring alignment across multiple teams on entry points, patterns, and system changes before a single screen was finalized.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--neutral-20);"></div>
+                  <img src="https://www.figma.com/api/mcp/asset/de0d6cf3-6fef-4cd8-9219-fa004704e5bb" alt="From ideas to MVP" style="object-fit: cover;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">From ideas to MVP</h3>
+                <p class="deliverable-desc">Worked through flow charts, wireframes, and different opt-in approaches before landing on the lightest version that still collected enough signal to make expert matching meaningful.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Next Project -->
+    <section class="next-section" aria-label="Next case study">
+      <div class="next-inner">
+        <p class="next-label">View Next Case Study</p>
+        <a class="next-link" href="ticketed-events.html">
+          <span class="next-title">Ticketed events</span>
+          <div class="next-preview">
+            <img src="images/ticketed-events.png" alt="Ticketed Events case study preview" />
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ───────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2024 Myanh Truong - Principal Product Designer.</p>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/myanh-truong-56998347" target="_blank" rel="noopener" aria-label="LinkedIn profile">LinkedIn</a></li>
+        <li><a href="https://dribbble.com/Meeang/shots" target="_blank" rel="noopener" aria-label="Dribbble profile">Dribbble</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+
+    toggle.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  </script>
+
+</body>
+</html>

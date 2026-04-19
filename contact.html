@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact - Myanh Truong</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background-color: #faf9f4; scrollbar-gutter: stable; }
+
+    /* ── View Transitions ────────────────────────────── */
+    @view-transition { navigation: auto; }
+    @keyframes vt-fade-out { to { opacity: 0; } }
+    ::view-transition-old(root) { animation: 0.2s ease both vt-fade-out; }
+    ::view-transition-new(root) { animation: none; }
+
+    /* ── Design Tokens ────────────────────────────────── */
+    :root {
+      --bg:          #faf9f4;
+      --default:     #30312e;
+      --sub-text:    #5e5f5b;
+      --tags:        #6d7c5e;
+      --neutral-10:  #f2f1ec;
+      --neutral-20:  #e3e3de;
+      --neutral-70:  #5e5f5b;
+      --green-20:    #d8e8c5;
+      --green-60:    #6d7c5e;
+      --green-70:    #546347;
+      --green-80:    #3d4b31;
+      --neutral:     #f8f7f2;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--default);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      line-height: 24px;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main { flex: 1 0 auto; }
+    .footer { flex-shrink: 0; }
+
+    /* ── Nav ──────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(250, 249, 244, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--neutral-20);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 32px; max-width: 1280px; margin: 0 auto;
+    }
+    .nav-logo {
+      font-size: 20px; font-weight: 600; letter-spacing: -0.5px;
+      color: var(--default); text-decoration: none; line-height: 28px;
+    }
+    .nav-links { display: flex; gap: 48px; list-style: none; }
+    .nav-links a {
+      font-size: 12px; font-weight: 600; letter-spacing: 2.4px;
+      text-transform: uppercase; color: var(--sub-text);
+      text-decoration: none; line-height: 16px; padding-bottom: 6px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--default); }
+    .nav-links a.active {
+      color: var(--default);
+      border-bottom: 2px solid var(--green-60);
+    }
+    .nav-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: var(--default); border-radius: 2px;
+    }
+
+    /* ── Main ─────────────────────────────────────────── */
+    .main {
+      max-width: 1280px; margin: 0 auto;
+      padding: 128px 48px 80px;
+      display: flex; flex-direction: column; gap: 48px;
+      width: 100%;
+    }
+
+    /* ── Hero ─────────────────────────────────────────── */
+    .hero {
+      display: flex; flex-direction: column; gap: 24px;
+      align-items: center; text-align: center;
+    }
+    .hero-heading {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: clamp(44px, 6.5vw, 72px);
+      line-height: 1;
+      letter-spacing: -1.8px;
+      color: var(--default);
+      max-width: 754px;
+    }
+    .hero-subtitle {
+      font-size: 20px; font-weight: 400;
+      line-height: 32.5px; color: var(--sub-text);
+      max-width: 652px;
+    }
+
+    /* ── Bento Contact Grid ───────────────────────────── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 32px;
+      padding-top: 48px;
+      width: 100%;
+    }
+
+    /* Form card */
+    .contact-form-card {
+      grid-column: 1 / span 7;
+      background: var(--neutral-10);
+      border-radius: 48px;
+      padding: 48px 48px 64px;
+      display: flex; flex-direction: column;
+    }
+    .contact-form {
+      display: flex; flex-direction: column; gap: 32px;
+      width: 100%;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    .form-field {
+      position: relative;
+      display: flex; flex-direction: column;
+    }
+    .form-label {
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: #556448; line-height: 16px;
+      padding-left: 8px; padding-bottom: 8px;
+    }
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      background: var(--neutral-20);
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px; font-weight: 400; line-height: 24px;
+      color: var(--default);
+      padding: 19px 24px;
+      outline: none;
+      transition: box-shadow 0.2s;
+    }
+    .form-input { border-radius: 48px; }
+    .form-textarea {
+      border-radius: 24px;
+      resize: vertical;
+      min-height: 160px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 16px 24px;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: rgba(48, 49, 46, 0.5);
+    }
+    .form-input:focus,
+    .form-textarea:focus {
+      box-shadow: 0 0 0 2px var(--green-60);
+    }
+    .form-submit {
+      align-self: flex-start;
+      background: var(--green-70);
+      color: var(--neutral);
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 16px; line-height: 24px;
+      padding: 16px 40px;
+      border: none; border-radius: 9999px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .form-submit:hover {
+      background: var(--green-80);
+      transform: translateY(-1px);
+    }
+
+    /* Connection card */
+    .contact-side {
+      grid-column: 8 / span 5;
+      display: flex; flex-direction: column;
+    }
+    .connection-card {
+      background: var(--green-20);
+      border-radius: 48px;
+      padding: 32px 32px 64px;
+      display: flex; flex-direction: column; gap: 24px;
+    }
+    .connection-heading {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 32px;
+      color: var(--default);
+    }
+    .direct-list {
+      display: flex; flex-direction: column; gap: 32px;
+    }
+    .direct-item {
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .direct-icon {
+      width: 48px; height: 48px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 9999px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .direct-icon img { display: block; }
+    .direct-body {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .direct-label {
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--tags); line-height: 16px;
+    }
+    .direct-value {
+      font-size: 18px; font-weight: 400;
+      line-height: 29.25px; color: var(--default);
+      text-decoration: none;
+    }
+    a.direct-value:hover { color: var(--green-70); }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer {
+      background: #eeeee8;
+      border-radius: 48px 48px 0 0;
+      width: 100%;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 64px 48px; max-width: 1280px; margin: 0 auto;
+    }
+    .footer-copy {
+      font-size: 14px; font-weight: 400; line-height: 20px;
+      color: rgba(48, 51, 46, 0.7);
+    }
+    .footer-links {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .footer-links a {
+      font-size: 14px; font-weight: 400; line-height: 20px;
+      color: rgba(48, 51, 46, 0.7);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--default); }
+
+    /* ── Responsive ───────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .contact-form-card { grid-column: 1 / -1; }
+      .contact-side { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 900px) {
+      .nav-inner { padding: 20px 24px; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 24px;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(250,249,244,0.97);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--neutral-20);
+        padding: 24px 32px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+
+      .main { padding: 96px 24px 48px; }
+      .contact-form-card { padding: 32px 24px 40px; border-radius: 32px; }
+      .connection-card { padding: 32px 24px 40px; border-radius: 32px; }
+      .footer-inner {
+        flex-direction: column; gap: 24px;
+        align-items: flex-start; padding: 48px 24px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ──────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Myanh Truong</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ── Hero ─────────────────────────────────────────── -->
+    <section class="hero" aria-label="Contact intro">
+      <h1 class="hero-heading">Let's figure out if we're a fit.</h1>
+      <p class="hero-subtitle">
+        I'm currently open to Principal, Staff, and Lead product design roles.
+        If you're working on something interesting, let's talk.
+      </p>
+    </section>
+
+    <!-- ── Bento Contact Grid ──────────────────────────── -->
+    <section class="contact-grid" aria-label="Contact form and details">
+
+      <!-- Contact Form Card -->
+      <div class="contact-form-card">
+        <form class="contact-form" action="mailto:myanhdtruong@gmail.com" method="post" enctype="text/plain">
+          <div class="form-row">
+            <div class="form-field">
+              <label class="form-label" for="name">Name</label>
+              <input class="form-input" id="name" name="name" type="text" placeholder="John Doe" required />
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="email">Email</label>
+              <input class="form-input" id="email" name="email" type="email" placeholder="hello@example.com" required />
+            </div>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="subject">Subject</label>
+            <input class="form-input" id="subject" name="subject" type="text" placeholder="Inquiry about..." />
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="message">Message</label>
+            <textarea class="form-textarea" id="message" name="message" placeholder="Tell us more about your vision..." required></textarea>
+          </div>
+          <button class="form-submit" type="submit">Send Message</button>
+        </form>
+      </div>
+
+      <!-- Side Information Column -->
+      <aside class="contact-side">
+        <div class="connection-card">
+          <h2 class="connection-heading">Direct Reach</h2>
+          <div class="direct-list">
+            <div class="direct-item">
+              <div class="direct-icon" aria-hidden="true">
+                <img src="images/contact/email-icon.svg" alt="" width="20" height="16" />
+              </div>
+              <div class="direct-body">
+                <span class="direct-label">Email</span>
+                <a class="direct-value" href="mailto:myanhdtruong@gmail.com">myanhdtruong@gmail.com</a>
+              </div>
+            </div>
+            <div class="direct-item">
+              <div class="direct-icon" aria-hidden="true">
+                <img src="images/contact/location-icon.svg" alt="" width="16" height="20" />
+              </div>
+              <div class="direct-body">
+                <span class="direct-label">Location</span>
+                <span class="direct-value">Seattle Metro, Washington</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+    </section>
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 Myanh Truong - Principal Product Designer.</p>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/myanh-truong-56998347" target="_blank" rel="noopener" aria-label="LinkedIn profile">LinkedIn</a></li>
+        <li><a href="https://dribbble.com/Meeang/shots" target="_blank" rel="noopener" aria-label="Dribbble profile">Dribbble</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Table's Marketplace - Myanh Truong</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background-color: #faf9f4; scrollbar-gutter: stable; }
+
+    /* ── View Transitions ────────────────────────────── */
+    @view-transition { navigation: auto; }
+    @keyframes vt-fade-out { to { opacity: 0; } }
+    ::view-transition-old(root) { animation: 0.2s ease both vt-fade-out; }
+    ::view-transition-new(root) { animation: none; }
+    ::view-transition-group(tables-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+    ::view-transition-image-pair(tables-hero) { isolation: isolate; }
+    ::view-transition-old(tables-hero),
+    ::view-transition-new(tables-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    /* ── Tokens ──────────────────────────────────────── */
+    :root {
+      --bg:         #faf9f4;
+      --default:    #30312e;
+      --sub-text:   #5e5f5b;
+      --tags:       #6d7c5e;
+      --neutral-10: #f2f1ec;
+      --neutral-20: #e3e3de;
+      --neutral-70: #5e5f5b;
+      --green-60:   #6d7c5e;
+      --green-70:   #546347;
+      --brown-20:   #e9e2d3;
+      --brown-30:   #cdc6b8;
+      --brown-50:   #969084;
+      --secondary:  #d6cfc1;
+      --section-bg: #f4f4ee;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--default);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      line-height: 24px;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(250,249,244,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--neutral-20);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 32px; max-width: 1280px; margin: 0 auto;
+    }
+    .nav-logo {
+      font-size: 20px; font-weight: 600; letter-spacing: -0.5px;
+      color: var(--default); text-decoration: none; line-height: 28px;
+    }
+    .nav-links { display: flex; gap: 48px; list-style: none; }
+    .nav-links a {
+      font-size: 12px; font-weight: 600; letter-spacing: 2.4px;
+      text-transform: uppercase; color: var(--sub-text);
+      text-decoration: none; line-height: 16px; padding-bottom: 6px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--default); }
+    .nav-links a.active { color: var(--default); border-bottom: 2px solid var(--green-60); }
+    .nav-toggle {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; cursor: pointer; padding: 4px;
+    }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: var(--default); border-radius: 2px;
+    }
+
+    /* ── Main ────────────────────────────────────────── */
+    .main {
+      display: flex; flex-direction: column; align-items: center;
+      padding-top: 128px; gap: 64px;
+    }
+
+    /* ── Hero reveal animation ───────────────────────── */
+    .hero-text-outer {
+      display: grid;
+      grid-template-rows: 0fr;
+      animation: hero-row-open 0.4s cubic-bezier(0.25, 0, 0, 1) 0.1s both;
+    }
+    @keyframes hero-row-open {
+      to { grid-template-rows: 1fr; }
+    }
+    .hero-text {
+      overflow: hidden;
+      min-height: 0;
+      animation: hero-text-enter 0.35s ease 0.15s both;
+    }
+    @keyframes hero-text-enter {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-gap { height: 40px; flex-shrink: 0; }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-text-outer { animation: none; grid-template-rows: 1fr; }
+      .hero-text { animation: none; }
+    }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero-section {
+      display: flex; flex-direction: column;
+      width: 100%; max-width: 1280px; padding: 0 48px;
+    }
+    .hero-tags { display: flex; gap: 12px; align-items: center; }
+    .tag-pill {
+      font-size: 12px; font-weight: 600; letter-spacing: 2.4px;
+      text-transform: uppercase; color: var(--neutral-70);
+      line-height: 16px; padding: 6px 16px; border-radius: 9999px;
+    }
+    .tag-pill-brown  { background: var(--brown-20); }
+    .tag-pill-neutral { background: var(--neutral-20); }
+    .hero-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(56px, 7.5vw, 96px); font-weight: 800;
+      line-height: 1; letter-spacing: -2.4px; color: var(--default);
+      max-width: 896px; margin-top: 24px;
+    }
+    .hero-subtitle {
+      font-size: 24px; font-weight: 400; line-height: 32px;
+      color: var(--default); max-width: 720px; margin-top: 24px;
+    }
+    .hero-image {
+      width: 100%; border-radius: 16px; overflow: hidden; background: #eeeee8;
+    }
+    .hero-image img { display: block; width: 100%; height: 600px; object-fit: cover; }
+
+    /* ── Metadata ────────────────────────────────────── */
+    .metadata-strip {
+      width: 100%; max-width: 1280px; padding: 49px 48px;
+      border-top: 1px solid #eeeee8; border-bottom: 1px solid #eeeee8;
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 32px;
+    }
+    .meta-item { display: flex; flex-direction: column; }
+    .meta-label {
+      font-size: 12px; font-weight: 600; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--tags); line-height: 16px;
+    }
+    .meta-value { margin-top: 8px; font-size: 18px; font-weight: 600; line-height: 28px; color: var(--default); }
+    .meta-sub { font-size: 14px; font-weight: 400; line-height: 20px; color: var(--sub-text); }
+
+    /* ── Case Study Row ──────────────────────────────── */
+    .case-study-row {
+      display: flex; gap: 32px; align-items: flex-start;
+      width: 100%; max-width: 1280px; padding: 32px 48px 0;
+    }
+    .case-study-text { flex: 1; display: flex; flex-direction: column; gap: 64px; min-width: 0; }
+    .cs-block { display: flex; flex-direction: column; gap: 24px; }
+    .cs-rule { width: 48px; height: 4px; background: var(--green-70); border-radius: 9999px; flex-shrink: 0; }
+    .cs-heading {
+      font-family: 'Manrope', sans-serif; font-size: 30px; font-weight: 700;
+      letter-spacing: -0.75px; line-height: 36px; color: var(--default);
+    }
+    .cs-body { font-size: 18px; font-weight: 400; line-height: 29.25px; color: var(--sub-text); }
+    .cs-list { display: flex; flex-direction: column; gap: 12px; padding-top: 16px; }
+    .cs-list-item { display: flex; gap: 12px; align-items: center; }
+    .cs-list-item img { width: 15px; height: 15px; flex-shrink: 0; }
+    .cs-list-item span { font-size: 14px; font-weight: 400; line-height: 20px; color: var(--sub-text); }
+    .case-study-visual {
+      width: 664px; height: 641px; flex-shrink: 0; border-radius: 16px;
+      overflow: hidden; position: relative; background: var(--secondary);
+    }
+    .case-study-visual img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; border-radius: 16px;
+    }
+
+    /* ── Execution Section ───────────────────────────── */
+    .execution-section { background: var(--section-bg); width: 100%; padding: 192px 0 128px; }
+    .execution-inner {
+      display: flex; flex-direction: column; gap: 80px;
+      max-width: 1280px; margin: 0 auto; padding: 0 48px;
+    }
+    .section-intro { display: flex; flex-direction: column; gap: 23px; }
+    .section-heading {
+      font-family: 'Manrope', sans-serif; font-size: clamp(32px,4vw,48px);
+      font-weight: 800; letter-spacing: -1.2px; line-height: 1; color: var(--default);
+    }
+    .section-subheading {
+      font-size: 20px; font-weight: 400; line-height: 32.5px;
+      color: var(--sub-text); max-width: 732px;
+    }
+
+    /* ── Deliverable Blocks ──────────────────────────── */
+    .deliverable-full { display: flex; flex-direction: column; gap: 12px; padding-bottom: 96px; }
+    .deliverable-card { background: var(--bg); border-radius: 16px; overflow: hidden; padding: 24px; }
+    .deliverable-card-lg { padding: 24px; }
+    .deliverable-img-wrap { border-radius: 32px; overflow: hidden; height: 472px; position: relative; }
+    .deliverable-img-wrap img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; border-radius: 32px;
+    }
+    .img-bg { position: absolute; inset: 0; border-radius: 32px; }
+    .deliverable-meta { padding: 20px 48px 0; display: flex; flex-direction: column; gap: 12px; }
+    .deliverable-title {
+      font-family: 'Manrope', sans-serif; font-size: 24px; font-weight: 700;
+      line-height: 32px; color: var(--default);
+    }
+    .deliverable-desc { font-size: 16px; font-weight: 400; line-height: 24px; color: var(--sub-text); }
+    .deliverable-tags { display: flex; gap: 16px; padding-top: 12px; flex-wrap: wrap; }
+    .deliverable-tag {
+      font-size: 12px; font-weight: 600; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--tags); line-height: 16px;
+    }
+    .deliverable-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding: 0 48px; }
+    .deliverable-half { display: flex; flex-direction: column; gap: 12px; }
+    .deliverable-half.offset-down { padding-top: 96px; }
+    .deliverable-half.offset-up   { padding-bottom: 96px; }
+
+    /* ── Quote ───────────────────────────────────────── */
+    .quote-section {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 40px; max-width: 896px; padding: 64px 24px 0; text-align: center;
+    }
+    .quote-text {
+      font-size: clamp(32px,4vw,48px); font-weight: 600;
+      letter-spacing: -1.2px; line-height: 1; color: #30332e;
+    }
+    .quote-attr { font-size: 18px; font-weight: 600; line-height: 28px; color: #30332e; padding-top: 8px; }
+
+    /* ── Next Project ────────────────────────────────── */
+    .next-section { width: 100%; padding: 193px 24px 128px; border-top: 1px solid #e8e9e2; }
+    .next-inner { max-width: 1280px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 32px; }
+    .next-label { font-size: 24px; font-weight: 400; line-height: 32px; color: var(--tags); text-align: center; }
+    .next-link {
+      display: flex; flex-direction: column; gap: 64px; align-items: center;
+      width: 100%; max-width: 866px; text-decoration: none;
+    }
+    .next-title {
+      font-family: 'Manrope', sans-serif; font-size: clamp(48px,7vw,96px);
+      font-weight: 800; line-height: 1; letter-spacing: -2.4px;
+      color: #30332e; text-align: center; transition: opacity 0.2s;
+    }
+    .next-link:hover .next-title { opacity: 0.7; }
+    .next-preview {
+      width: 100%; max-width: 1024px; border-radius: 16px; overflow: hidden;
+      background: #eeeee8; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+    .next-preview img { display: block; width: 100%; height: 439px; object-fit: cover; }
+
+    /* ── Footer ──────────────────────────────────────── */
+    .footer { background: var(--neutral-10); border-radius: 48px 48px 0 0; width: 100%; margin-top: 80px; }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 64px 48px; max-width: 1280px; margin: 0 auto;
+    }
+    .footer-copy { font-size: 14px; font-weight: 400; line-height: 20px; color: var(--sub-text); }
+    .footer-links { display: flex; gap: 32px; list-style: none; }
+    .footer-links a { font-size: 14px; font-weight: 400; line-height: 20px; color: var(--sub-text); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--default); }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .case-study-row { flex-direction: column; padding: 32px 48px 0; }
+      .case-study-visual { width: 100%; height: 400px; }
+      .deliverable-pair { grid-template-columns: 1fr; padding: 0; }
+      .deliverable-half.offset-down,
+      .deliverable-half.offset-up { padding-top: 0; padding-bottom: 0; }
+    }
+    @media (max-width: 900px) {
+      .nav-inner { padding: 20px 24px; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 24px;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(250,249,244,0.97); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--neutral-20); padding: 24px 32px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+      .main { padding-top: 80px; gap: 48px; }
+      .hero-section { padding: 0 24px; }
+      .hero-title { font-size: clamp(40px,8vw,72px); letter-spacing: -1.5px; }
+      .hero-subtitle { font-size: 18px; }
+      .hero-image img { height: 300px; }
+      .metadata-strip { grid-template-columns: repeat(2,1fr); padding: 32px 24px; }
+      .case-study-row { padding: 32px 24px 0; }
+      .execution-section { padding: 96px 0 64px; }
+      .execution-inner { padding: 0 24px; }
+      .deliverable-full { padding-bottom: 48px; }
+      .deliverable-meta { padding: 16px 24px 0; }
+      .quote-text { font-size: clamp(24px,5vw,40px); }
+      .next-section { padding: 96px 24px 64px; }
+      .next-title { font-size: clamp(36px,8vw,72px); }
+      .next-preview img { height: 280px; }
+      .footer-inner { flex-direction: column; gap: 24px; align-items: flex-start; padding: 48px 24px; }
+      .deliverable-card { padding: 8px; }
+      .deliverable-half .deliverable-img-wrap { height: auto; aspect-ratio: 11 / 10; }
+    }
+    @media (max-width: 470px) {
+      .deliverable-half .deliverable-img-wrap { height: auto; aspect-ratio: 1 / 1; }
+      .deliverable-full .deliverable-img-wrap { height: auto; aspect-ratio: 16 / 9; }
+    }
+    @media (max-width: 600px) {
+      .metadata-strip { grid-template-columns: 1fr; }
+      .case-study-visual { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Myanh Truong</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#work" class="active">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="hero-text-outer">
+        <div class="hero-text">
+          <div class="hero-tags">
+            <span class="tag-pill tag-pill-brown">Lead Product Designer</span>
+            <span class="tag-pill tag-pill-neutral">Toast Tables</span>
+          </div>
+          <h1 class="hero-title">Table's marketplace</h1>
+          <p class="hero-subtitle">Designing a consumer marketplace to drive demand and scale a two-sided restaurant platform.</p>
+          <div class="hero-gap" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="hero-image" style="view-transition-name: tables-hero;">
+        <img src="images/tables-marketplace/hero.png" alt="Table's Marketplace - hero image" />
+      </div>
+    </section>
+
+    <!-- Metadata -->
+    <div class="metadata-strip">
+      <div class="meta-item">
+        <span class="meta-label">My Role</span>
+        <span class="meta-value">Lead Product Designer</span>
+        <span class="meta-sub">Strategy, UX, and visual ID</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Duration</span>
+        <span class="meta-value">8 Weeks</span>
+        <span class="meta-sub">Launch: Q3 2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Industry</span>
+        <span class="meta-value">Restaurant Tech</span>
+        <span class="meta-sub">Toast Tables</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Key Outcome</span>
+        <span class="meta-value">~70% waitlist conversion</span>
+        <span class="meta-sub">~8% growth in customer acquisition</span>
+      </div>
+    </div>
+
+    <!-- Challenge + Solution -->
+    <div class="case-study-row">
+      <div class="case-study-text">
+
+        <div class="cs-block">
+          <div class="cs-rule"></div>
+          <h2 class="cs-heading">The Challenge</h2>
+          <p class="cs-body">Toast Tables had built strong tooling for restaurants, but lacked a meaningful way to generate consumer demand.<br><br>Without a dedicated discovery surface:</p>
+          <ul class="cs-list" role="list">
+            <li class="cs-list-item">
+              <img src="images/checkmark.svg" alt="" aria-hidden="true" />
+              <span>Diners had limited ways to find restaurants on Toast</span>
+            </li>
+            <li class="cs-list-item">
+              <img src="images/checkmark.svg" alt="" aria-hidden="true" />
+              <span>High-intent users were going to third-party platforms</span>
+            </li>
+            <li class="cs-list-item">
+              <img src="images/checkmark.svg" alt="" aria-hidden="true" />
+              <span>Restaurants relied on external channels to fill seats</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="cs-block">
+          <div class="cs-rule"></div>
+          <h2 class="cs-heading">The Solution</h2>
+          <p class="cs-body">Introduced a consumer marketplace that surfaces real-time availability and connects diners directly to booking.<br><br>By focusing on high-intent, same-day dining, we turned discovery into a primary driver of demand.</p>
+        </div>
+
+      </div>
+
+      <div class="case-study-visual">
+        <img src="images/tables-marketplace/case-study-visuals.png" alt="Case study visuals" />
+      </div>
+    </div>
+
+    <!-- Design Execution -->
+    <section class="execution-section" aria-label="Design execution">
+      <div class="execution-inner">
+
+        <div class="section-intro">
+          <h2 class="section-heading">Designing a discovery surface</h2>
+          <p class="section-subheading">The marketplace needed to balance exploration with immediacy - helping diners quickly find relevant options while making it easy to act. We focused on three key areas: discovery, decision-making, and conversion.</p>
+        </div>
+
+        <!-- Surface 1: Discovery & ranking -->
+        <div>
+          <div class="deliverable-full">
+            <div class="deliverable-card">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background:#969084;"></div>
+                <img src="images/tables-marketplace/discovery-ranking.png" alt="Discovery and ranking UI" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">Discovery &amp; ranking</h3>
+              <p class="deliverable-desc">The core of the marketplace is helping users find the right option at the right moment. This experience prioritizes real-time context, surfacing restaurants based on proximity, availability, and intent to drive faster decisions.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">Responsive web</span>
+                <span class="deliverable-tag">Conversion-focused UX</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap" style="overflow:hidden;">
+                  <div class="img-bg" style="background:#969084;"></div>
+                  <img src="images/tables-marketplace/high-intent-discovery.png" alt="High-intent discovery UI" style="object-fit: contain;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left:0;padding-right:0;">
+                <h3 class="deliverable-title">High-intent discovery</h3>
+                <p class="deliverable-desc">Designed for users looking to dine now - prioritizing nearby restaurants with immediate availability.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background:#969084;"></div>
+                  <img src="images/tables-marketplace/smart-ranking.png" alt="Smart ranking signals UI" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left:0;padding-right:0;">
+                <h3 class="deliverable-title">Smart ranking signals</h3>
+                <p class="deliverable-desc">Balancing proximity, popularity, and real-time availability to surface the most relevant options.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Surface 2: Restaurant Detail -->
+        <div>
+          <div class="deliverable-full">
+            <div class="deliverable-card deliverable-card-lg">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background:var(--neutral-20);"></div>
+                <img src="images/tables-marketplace/restaurant-detail.png" alt="Restaurant detail and decision making UI" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">Restaurant Detail &amp; Decision Making</h3>
+              <p class="deliverable-desc">Once users land on a restaurant, the experience needs to quickly answer: Is this the right choice? I focused on reducing cognitive load by surfacing the most important information upfront - helping users evaluate options without friction.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">Responsive web</span>
+                <span class="deliverable-tag">Conversion-focused UX</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background:var(--neutral-20);"></div>
+                  <img src="images/tables-marketplace/clear-hierarchy.png" alt="Clear information hierarchy UI" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left:0;padding-right:0;">
+                <h3 class="deliverable-title">Clear information hierarchy</h3>
+                <p class="deliverable-desc">Key details like availability, pricing, and booking options are surfaced immediately - allowing users to quickly understand what's possible without digging.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background:var(--neutral-20);"></div>
+                  <img src="images/tables-marketplace/clear-availability.png" alt="Clear availability and options UI" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left:0;padding-right:0;">
+                <h3 class="deliverable-title">Clear availability &amp; options</h3>
+                <p class="deliverable-desc">Unifying reservations, waitlists, and experiences into a single view - making next steps obvious and easy.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Surface 3: Booking & Conversion -->
+        <div>
+          <div class="deliverable-full">
+            <div class="deliverable-card deliverable-card-lg">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background:var(--brown-30);"></div>
+                <img src="images/tables-marketplace/booking-conversion.png" alt="Booking and conversion flow" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">Booking &amp; Conversion</h3>
+              <p class="deliverable-desc">The final step is turning intent into action. This required minimizing friction and reinforcing urgency, ensuring users could move from discovery to booking without hesitation or drop-off.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">Responsive web</span>
+                <span class="deliverable-tag">Conversion focused UX</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background:var(--brown-30);"></div>
+                  <img src="images/tables-marketplace/easy-booking.png" alt="Easy booking flow UI" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left:0;padding-right:0;">
+                <h3 class="deliverable-title">Easy booking flow</h3>
+                <p class="deliverable-desc">Reducing steps and maintaining context from discovery through checkout - supporting quick, high-intent decisions.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background:var(--brown-30);"></div>
+                  <img src="images/tables-marketplace/urgency-driven.png" alt="Urgency-driven decisions UI" style="object-fit: contain;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left:0;padding-right:0;">
+                <h3 class="deliverable-title">Urgency-driven decisions</h3>
+                <p class="deliverable-desc">Highlighting real-time availability and scarcity to encourage faster commitment and increase conversion.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Pull Quote -->
+    <div class="quote-section">
+      <img src="images/quote-mark.svg" alt="" aria-hidden="true" style="width:42.5px; height:30px;" />
+      <blockquote class="quote-text">"I love that guests can see the experiences I offer in the same page"</blockquote>
+      <p class="quote-attr">Toast Tables Customer</p>
+    </div>
+
+    <!-- Next Project -->
+    <section class="next-section" aria-label="Next case study">
+      <div class="next-inner">
+        <p class="next-label">View Next Case Study</p>
+        <a class="next-link" href="designing-for-scale.html">
+          <span class="next-title">One platform, two systems</span>
+          <div class="next-preview">
+            <img src="images/tables-marketplace/next-project.png" alt="One platform, two systems preview" />
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2024 Myanh Truong - Principal Product Designer.</p>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/myanh-truong-56998347" target="_blank" rel="noopener" aria-label="LinkedIn profile">LinkedIn</a></li>
+        <li><a href="https://dribbble.com/Meeang/shots" target="_blank" rel="noopener" aria-label="Dribbble profile">Dribbble</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    document.querySelectorAll('.nav-logo, .nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        const hero = document.querySelector('.hero-image');
+        if (hero) hero.style.removeProperty('view-transition-name');
+      });
+    });
+  </script>
+
+</body>
+</html>

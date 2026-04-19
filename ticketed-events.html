@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ticketed Events - Myanh Truong</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background-color: #faf9f4; scrollbar-gutter: stable; }
+
+    /* ── Design Tokens ────────────────────────────────── */
+    :root {
+      --bg:          #faf9f4;
+      --default:     #30312e;
+      --sub-text:    #5e5f5b;
+      --tags:        #6d7c5e;
+      --neutral-10:  #f2f1ec;
+      --neutral-20:  #e3e3de;
+      --neutral-70:  #5e5f5b;
+      --green-30:    #bcccaa;
+      --green-40:    #a1b090;
+      --green-60:    #6d7c5e;
+      --green-70:    #546347;
+      --green-80:    #3d4b31;
+      --blue-50:     #8492a2;
+      --brown-20:    #e9e2d3;
+      --neutral:     #f8f7f2;
+      --section-bg:  #f4f4ee;
+    }
+
+    /* ── View Transitions ────────────────────────────── */
+    @view-transition {
+      navigation: auto;
+    }
+
+    @keyframes vt-fade-out { to { opacity: 0; } }
+    ::view-transition-old(root) { animation: 0.2s ease both vt-fade-out; }
+    ::view-transition-new(root) { animation: none; }
+
+    ::view-transition-group(ticketed-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+    ::view-transition-image-pair(ticketed-hero) {
+      isolation: isolate;
+    }
+    ::view-transition-old(ticketed-hero),
+    ::view-transition-new(ticketed-hero) {
+      animation-duration: 0.55s;
+      animation-timing-function: cubic-bezier(0.25, 0, 0, 1);
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--default);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      line-height: 24px;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ──────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(250, 249, 244, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--neutral-20);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--default);
+      text-decoration: none;
+      line-height: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--sub-text);
+      text-decoration: none;
+      line-height: 16px;
+      padding-bottom: 6px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--default); }
+    .nav-links a.active {
+      color: var(--default);
+      border-bottom: 2px solid var(--green-60);
+    }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--default);
+      border-radius: 2px;
+    }
+
+    /* ── Shared Container ─────────────────────────────── */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* content column inside container: 1184px */
+    .content-col {
+      max-width: 1184px;
+      margin: 0 auto;
+    }
+
+    /* ── Main ─────────────────────────────────────────── */
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 128px;
+      gap: 64px;
+    }
+
+    /* ── Hero reveal animation ───────────────────────── */
+
+    /* Grid wrapper: row expands from 0 → natural height, pushing image down */
+    .hero-text-outer {
+      display: grid;
+      grid-template-rows: 0fr;
+      animation: hero-row-open 0.4s cubic-bezier(0.25, 0, 0, 1) 0.1s both;
+    }
+    @keyframes hero-row-open {
+      to { grid-template-rows: 1fr; }
+    }
+
+    /* Grid item: clipped while row expands; content fades + slides in */
+    .hero-text {
+      overflow: hidden;
+      min-height: 0;
+      animation: hero-text-enter 0.35s ease 0.15s both;
+    }
+    @keyframes hero-text-enter {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Spacer that creates the 40px gap between text block and image */
+    .hero-gap { height: 40px; flex-shrink: 0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hero-text-outer { animation: none; grid-template-rows: 1fr; }
+      .hero-text { animation: none; }
+    }
+
+    /* ── Hero Section ─────────────────────────────────── */
+    .hero-section {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: 1280px;
+      padding: 0 48px;
+    }
+
+    .hero-tags {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .tag-pill {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--neutral-70);
+      line-height: 16px;
+      padding: 6px 16px;
+      border-radius: 9999px;
+    }
+
+    .tag-pill-brown { background: var(--brown-20); }
+    .tag-pill-neutral { background: var(--neutral-20); }
+
+    .hero-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(56px, 7.5vw, 96px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2.4px;
+      color: var(--default);
+      max-width: 896px;
+    }
+
+    .hero-subtitle {
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 32px;
+      color: var(--sub-text);
+      max-width: 720px;
+    }
+
+    .hero-image {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #eeeee8;
+    }
+
+    .hero-image img {
+      display: block;
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+    }
+
+    /* ── Metadata Strip ───────────────────────────────── */
+    .metadata-strip {
+      width: 100%;
+      max-width: 1280px;
+      padding: 49px 48px;
+      border-top: 1px solid #eeeee8;
+      border-bottom: 1px solid #eeeee8;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+
+    .meta-item { display: flex; flex-direction: column; }
+
+    .meta-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--tags);
+      line-height: 16px;
+    }
+
+    .meta-value {
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      color: var(--default);
+    }
+
+    .meta-sub {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+    }
+
+    /* ── Case Study Text + Visual ─────────────────────── */
+    .case-study-row {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      width: 100%;
+      max-width: 1280px;
+      padding: 32px 48px 0;
+    }
+
+    .case-study-text {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+      min-width: 0;
+    }
+
+    .cs-block {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .cs-rule {
+      width: 48px;
+      height: 4px;
+      background: var(--green-70);
+      border-radius: 9999px;
+      flex-shrink: 0;
+    }
+
+    .cs-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.75px;
+      line-height: 36px;
+      color: var(--default);
+    }
+
+    .cs-body {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 29.25px;
+      color: var(--sub-text);
+    }
+
+    .cs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 16px;
+    }
+
+    .cs-list-item {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .cs-list-item img {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .cs-list-item span {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+    }
+
+    .case-study-visual {
+      width: 664px;
+      height: 641px;
+      flex-shrink: 0;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      background: var(--neutral-20);
+    }
+
+    .case-study-visual img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+
+    /* ── Design Execution Section ─────────────────────── */
+    .execution-section {
+      background: var(--section-bg);
+      width: 100%;
+      padding: 192px 0 128px;
+    }
+
+    .execution-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    .section-intro { display: flex; flex-direction: column; gap: 23px; }
+
+    .section-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      line-height: 1;
+      color: var(--default);
+    }
+
+    .section-subheading {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 32.5px;
+      color: var(--sub-text);
+      max-width: 732px;
+    }
+
+    /* ── Deliverable Blocks ───────────────────────────── */
+    .deliverable-full {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-bottom: 96px;
+    }
+
+    .deliverable-card {
+      background: var(--bg);
+      border-radius: 16px;
+      overflow: hidden;
+      padding: 24px;
+    }
+
+    .deliverable-card-lg {
+      padding: 24px;
+    }
+
+    .deliverable-img-wrap {
+      border-radius: 32px;
+      overflow: hidden;
+      height: 472px;
+      position: relative;
+    }
+
+    .deliverable-img-wrap img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 32px;
+    }
+
+    /* Floating image - positioned by inline style, height always auto to preserve aspect ratio */
+    .deliverable-img-wrap img.img-float {
+      inset: auto;
+      height: auto !important;
+      object-fit: unset;
+      border-radius: 0;
+    }
+
+    /* colored overlay under image */
+    .img-bg {
+      position: absolute;
+      inset: 0;
+      border-radius: 32px;
+    }
+
+    .deliverable-meta {
+      padding: 20px 48px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .deliverable-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      color: var(--default);
+    }
+
+    .deliverable-desc {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--sub-text);
+    }
+
+    .deliverable-tags {
+      display: flex;
+      gap: 16px;
+      padding-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .deliverable-tag {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--tags);
+      line-height: 16px;
+    }
+
+    /* Two-col deliverable grid */
+    .deliverable-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      padding: 0 48px;
+    }
+
+    .deliverable-half {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* stagger: second card offset down */
+    .deliverable-half.offset-down { padding-top: 96px; }
+    .deliverable-half.offset-up   { padding-bottom: 96px; }
+
+    /* ── Pull Quote ───────────────────────────────────── */
+    .quote-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      max-width: 896px;
+      padding: 64px 24px 0;
+      text-align: center;
+    }
+
+    .quote-mark { width: 42.5px; height: 30px; }
+
+    .quote-text {
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 600;
+      letter-spacing: -1.2px;
+      line-height: 1;
+      color: #30332e;
+    }
+
+    .quote-attr {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      color: #30332e;
+      padding-top: 8px;
+    }
+
+    /* ── Next Project ─────────────────────────────────── */
+    .next-section {
+      width: 100%;
+      padding: 193px 24px 128px;
+      border-top: 1px solid #e8e9e2;
+    }
+
+    .next-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .next-label {
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 32px;
+      color: var(--tags);
+      text-align: center;
+    }
+
+    .next-link {
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+      align-items: center;
+      width: 100%;
+      max-width: 866px;
+      text-decoration: none;
+    }
+
+    .next-title {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(48px, 7vw, 96px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -2.4px;
+      color: #30332e;
+      text-align: center;
+      transition: opacity 0.2s;
+    }
+
+    .next-link:hover .next-title { opacity: 0.7; }
+
+    .next-preview {
+      width: 100%;
+      max-width: 1024px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #eeeee8;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+    }
+
+    .next-preview img {
+      display: block;
+      width: 100%;
+      height: 439px;
+      object-fit: cover;
+    }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer {
+      background: var(--neutral-10);
+      border-radius: 48px 48px 0 0;
+      width: 100%;
+      margin-top: 80px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 64px 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer-copy {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--default); }
+
+    /* ── Responsive ───────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .case-study-row { flex-direction: column; padding: 32px 48px 0; }
+      .case-study-visual { width: 100%; height: 400px; }
+      .deliverable-pair { grid-template-columns: 1fr; padding: 0; }
+      .deliverable-half.offset-down,
+      .deliverable-half.offset-up { padding-top: 0; padding-bottom: 0; }
+    }
+
+    @media (max-width: 900px) {
+      .nav-inner { padding: 20px 24px; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 24px;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(250,249,244,0.97);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--neutral-20);
+        padding: 24px 32px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+
+      .main { padding-top: 80px; gap: 48px; }
+      .hero-section { padding: 0 24px; }
+      .hero-title { font-size: clamp(40px, 8vw, 72px); letter-spacing: -1.5px; }
+      .hero-subtitle { font-size: 18px; }
+      .hero-image img { height: 300px; }
+      .metadata-strip { grid-template-columns: repeat(2, 1fr); padding: 32px 24px; }
+      .case-study-row { padding: 32px 24px 0; }
+      .execution-section { padding: 96px 0 64px; }
+      .execution-inner { padding: 0 24px; }
+      .deliverable-full { padding-bottom: 48px; }
+      .deliverable-meta { padding: 16px 24px 0; }
+      .quote-text { font-size: clamp(24px, 5vw, 40px); }
+      .next-section { padding: 96px 24px 64px; }
+      .next-title { font-size: clamp(36px, 8vw, 72px); }
+      .next-preview img { height: 280px; }
+      .footer-inner { flex-direction: column; gap: 24px; align-items: flex-start; padding: 48px 24px; }
+      .deliverable-card { padding: 8px; }
+      .deliverable-half .deliverable-img-wrap { height: auto; aspect-ratio: 11 / 10; }
+    }
+    @media (max-width: 470px) {
+      .deliverable-half .deliverable-img-wrap { height: auto; aspect-ratio: 1 / 1; }
+      .deliverable-full .deliverable-img-wrap { height: auto; aspect-ratio: 16 / 9; }
+    }
+
+    @media (max-width: 600px) {
+      .metadata-strip { grid-template-columns: 1fr; }
+      .case-study-visual { height: 280px; }
+    }
+    /* ── Password Gate ────────────────────────────────── */
+    .gate-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      background: var(--bg);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .gate-card {
+      max-width: 420px; width: 100%;
+      text-align: center;
+    }
+    .gate-eyebrow {
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--sub-text); margin-bottom: 16px;
+    }
+    .gate-title {
+      font-family: 'Manrope', sans-serif; font-weight: 800;
+      font-size: 32px; line-height: 1.15; color: var(--default);
+      margin-bottom: 12px;
+    }
+    .gate-desc {
+      font-size: 15px; line-height: 1.5; color: var(--sub-text);
+      margin-bottom: 28px;
+    }
+    .gate-form { display: flex; flex-direction: column; gap: 12px; }
+    .gate-input {
+      width: 100%; padding: 14px 16px;
+      font: inherit; font-size: 15px;
+      background: var(--bg); color: var(--default);
+      border: 1px solid var(--neutral-20); border-radius: 10px;
+      outline: none; transition: border-color 0.15s;
+    }
+    .gate-input:focus { border-color: var(--green-60); }
+    .gate-btn {
+      padding: 14px 20px; font: inherit; font-size: 15px; font-weight: 600;
+      background: var(--green-80); color: var(--bg);
+      border: none; border-radius: 10px; cursor: pointer;
+      transition: background 0.15s;
+    }
+    .gate-btn:hover { background: var(--green-70); }
+    .gate-error { color: #b44; font-size: 13px; min-height: 18px; margin-top: 4px; }
+    body.gate-locked > :not(.gate-overlay) { display: none !important; }
+  </style>
+</head>
+<body class="gate-locked">
+
+  <!-- ── Password Gate ──────────────────────────────── -->
+  <div class="gate-overlay" id="gateOverlay">
+    <div class="gate-card">
+      <div class="gate-eyebrow">Protected case study</div>
+      <h1 class="gate-title">This project is password protected</h1>
+      <p class="gate-desc">This case study contains confidential work. Please enter the password shared with you to continue.</p>
+      <form class="gate-form" id="gateForm">
+        <input type="password" class="gate-input" id="gateInput" placeholder="Password" autocomplete="off" autofocus />
+        <button type="submit" class="gate-btn">Unlock</button>
+        <div class="gate-error" id="gateError" role="alert"></div>
+      </form>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const PASSWORD = 'portfolio2026'; // change this to your desired password
+      const KEY = 'ticketed-events-unlocked';
+      if (sessionStorage.getItem(KEY) === '1') {
+        document.body.classList.remove('gate-locked');
+        const ov = document.getElementById('gateOverlay');
+        if (ov) ov.remove();
+        return;
+      }
+      document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('gateForm');
+        const input = document.getElementById('gateInput');
+        const err = document.getElementById('gateError');
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (input.value === PASSWORD) {
+            sessionStorage.setItem(KEY, '1');
+            document.body.classList.remove('gate-locked');
+            document.getElementById('gateOverlay').remove();
+          } else {
+            err.textContent = 'Incorrect password. Please try again.';
+            input.value = '';
+            input.focus();
+          }
+        });
+      });
+    })();
+  </script>
+
+  <!-- ── Nav ──────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Myanh Truong</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#work" class="active">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ── Page ─────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Hero -->
+    <section class="hero-section">
+      <div class="hero-text-outer">
+        <div class="hero-text">
+          <div class="hero-tags">
+            <span class="tag-pill tag-pill-brown">Lead Product Designer</span>
+            <span class="tag-pill tag-pill-neutral">Toast Tables</span>
+          </div>
+          <h1 class="hero-title" style="margin-top: 24px;">Ticketed events</h1>
+          <p class="hero-subtitle" style="margin-top: 24px;">Building a flexible booking system for events, experiences, and prepaid dining, beyond traditional reservations.</p>
+          <div class="hero-gap" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="hero-image" style="view-transition-name: ticketed-hero;">
+        <img src="images/ticketed-events/hero.png" alt="Ticketed events - hero image" />
+      </div>
+    </section>
+
+    <!-- Metadata strip -->
+    <div class="metadata-strip">
+      <div class="meta-item">
+        <span class="meta-label">My Role</span>
+        <span class="meta-value">Lead Product Designer</span>
+        <span class="meta-sub">Strategy, UX, and visual ID</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Duration</span>
+        <span class="meta-value">8 weeks</span>
+        <span class="meta-sub">Launch: Q2 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Industry</span>
+        <span class="meta-value">Restaurant Tech</span>
+        <span class="meta-sub">Toast Tables</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Key Outcome</span>
+        <span class="meta-value">Grow customer base</span>
+        <span class="meta-sub">Expand addressable market</span>
+      </div>
+    </div>
+
+    <!-- Challenge + Solution / Side visual -->
+    <div class="case-study-row">
+      <div class="case-study-text">
+
+        <div class="cs-block">
+          <div class="cs-rule"></div>
+          <h2 class="cs-heading">The Challenge</h2>
+          <p class="cs-body">Restaurants were running events and prepaid experiences outside of Toast Tables, creating fragmented workflows and limiting Toast's ability to support higher-value bookings.</p>
+          <ul class="cs-list" role="list">
+            <li class="cs-list-item">
+              <img src="images/checkmark.svg" alt="" aria-hidden="true" />
+              <span>Rigid scheduling with fixed start times</span>
+            </li>
+            <li class="cs-list-item">
+              <img src="images/checkmark.svg" alt="" aria-hidden="true" />
+              <span>Capacity constrained by table inventory</span>
+            </li>
+            <li class="cs-list-item">
+              <img src="images/checkmark.svg" alt="" aria-hidden="true" />
+              <span>Poor support for non-traditional booking flows</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="cs-block">
+          <div class="cs-rule"></div>
+          <h2 class="cs-heading">The Solution</h2>
+          <p class="cs-body">Expand Tables beyond reservations by introducing a flexible ticketing model that unified events, experiences, and prepaid dining into a single system, integrating inventory, pricing, and payments directly into Table's ecosystem.</p>
+        </div>
+
+      </div>
+
+      <div class="case-study-visual">
+        <img src="images/ticketed-events/case-study-visuals.png" alt="Case study visuals" />
+      </div>
+    </div>
+
+    <!-- Design Execution -->
+    <section class="execution-section" aria-label="Design execution">
+      <div class="execution-inner">
+
+        <div class="section-intro">
+          <h2 class="section-heading">Designing across the ecosystem</h2>
+          <p class="section-subheading">Ticketed events required more than a single flow. I designed across three connected surfaces, each supporting a different part of the experience.</p>
+        </div>
+
+        <!-- ── Surface 1: Set up & config ── -->
+        <div>
+          <!-- Full-width: Set up & configurations -->
+          <div class="deliverable-full">
+            <div class="deliverable-card">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background: var(--green-40);"></div>
+                <img src="images/ticketed-events/setup-config.png" alt="Set up and configurations UI" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">Set up &amp; configurations</h3>
+              <p class="deliverable-desc">The foundation for how ticketed events are defined. Restaurant operators need to translate real-world experiences into a structured system - balancing schedules, capacity, pricing, and ticket types, while ensuring everything works seamlessly downstream for both staff and guests.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">Responsive Web</span>
+                <span class="deliverable-tag">Complex system design</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2-col: Walk through + Flexible ticketing -->
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--green-40);"></div>
+                  <img src="images/ticketed-events/walkthrough.png" alt="Walk through creation UI" class="img-float" style="top: 8.7%; left: 7.23%; width: 193.62%; height: 137.68%;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Walk through creation</h3>
+                <p class="deliverable-desc">A guided flow to simplify complex setup. Breaking down scheduling, inventory, and pricing into clear, sequential steps.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--green-40);"></div>
+                  <img src="images/ticketed-events/flexible-ticketing.png" alt="Flexible ticketing models UI" class="img-float" style="top: 18.75%; left: -61.2%; width: 195.74%; height: 139.19%;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Flexible ticketing models</h3>
+                <p class="deliverable-desc">Supporting multiple ticket types, pricing tiers, and constraints, allowing operators to design experiences beyond standard reservations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Surface 2: Event operations ── -->
+        <div>
+          <!-- Full-width: Event operations -->
+          <div class="deliverable-full">
+            <div class="deliverable-card deliverable-card-lg">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background: var(--blue-50);"></div>
+                <img src="images/ticketed-events/event-operations.png" alt="Event operations UI on tablet" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">Event operations</h3>
+              <p class="deliverable-desc">Designed for fast-paced, real-time environments where staff are managing live service. The experience needs to prioritize speed, clarity, and reliability - supporting check-ins, ticket validation, and guest flow without slowing down operations.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">Tablet experience</span>
+                <span class="deliverable-tag">Real-time operations</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2-col: Fast check-in + Operational awareness -->
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--blue-50);"></div>
+                  <img src="images/ticketed-events/fast-checkin.png" alt="Fast check-in and validation UI" class="img-float" style="top: 19.43%; left: 4.17%; width: 91.8%; height: 61.15%;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Fast check-in &amp; validation</h3>
+                <p class="deliverable-desc">Designed for speed and accuracy - enabling staff to quickly scan, verify, and manage guests during high-volume service.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--blue-50);"></div>
+                  <img src="images/ticketed-events/operational-awareness.png" alt="Operational awareness UI" class="img-float" style="top: 19.39%; left: 4.04%; width: 91.92%; height: 61.23%;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Operational awareness</h3>
+                <p class="deliverable-desc">Surfacing key event details like capacity, arrivals, and status - helping staff stay aligned during live service.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Surface 3: Discovery & booking ── -->
+        <div>
+          <!-- Full-width: Discovery & booking -->
+          <div class="deliverable-full">
+            <div class="deliverable-card deliverable-card-lg">
+              <div class="deliverable-img-wrap">
+                <div class="img-bg" style="background: var(--green-30);"></div>
+                <img src="images/ticketed-events/discovery-booking.png" alt="Discovery and booking flow" />
+              </div>
+            </div>
+            <div class="deliverable-meta">
+              <h3 class="deliverable-title">Discovery &amp; booking</h3>
+              <p class="deliverable-desc">The entry point for diners to explore and purchase ticketed experiences. Unlike reservations, these flows require clear communication of pricing, expectations, and commitment, while still feeling fast and intuitive for high-intent users.</p>
+              <div class="deliverable-tags">
+                <span class="deliverable-tag">Responsive web</span>
+                <span class="deliverable-tag">Conversion focused UX</span>
+                <span class="deliverable-tag">Mobile</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2-col: Clear pricing + Seamless purchase -->
+          <div class="deliverable-pair">
+            <div class="deliverable-half offset-up">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--green-30);"></div>
+                  <img src="images/ticketed-events/clear-pricing.png" alt="Clear pricing and commitment UI" class="img-float" style="top: 3.5%; left: 28.61%; width: 42.78%; height: 93.01%;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Clear pricing &amp; commitment</h3>
+                <p class="deliverable-desc">Making ticketed events easy to understand, communicating cost, expectations, and policies upfront.</p>
+              </div>
+            </div>
+            <div class="deliverable-half offset-down">
+              <div class="deliverable-card">
+                <div class="deliverable-img-wrap">
+                  <div class="img-bg" style="background: var(--green-30);"></div>
+                  <img src="images/ticketed-events/purchase-flow.png" alt="Seamless purchase flow UI" class="img-float" style="top: 4.4%; left: 29.03%; width: 41.95%; height: 91.2%;" />
+                </div>
+              </div>
+              <div class="deliverable-meta" style="padding-left: 0; padding-right: 0;">
+                <h3 class="deliverable-title">Seamless purchase flow</h3>
+                <p class="deliverable-desc">Reducing friction from discovery to checkout, supporting quick decisions for high-intent users.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Pull Quote -->
+    <div class="quote-section">
+      <img src="images/quote-mark.svg" alt="" aria-hidden="true" style="width:42.5px; height:30px;" />
+      <blockquote class="quote-text">"I like the simple to use layout of the guided set up"</blockquote>
+      <p class="quote-attr">Toast Tables Customer</p>
+    </div>
+
+    <!-- Next Project -->
+    <section class="next-section" aria-label="Next case study">
+      <div class="next-inner">
+        <p class="next-label">View Next Case Study</p>
+        <a class="next-link" href="tables-marketplace.html">
+          <span class="next-title">Table's marketplace</span>
+          <div class="next-preview">
+            <img src="images/ticketed-events/next-project.png" alt="Table Marketplace case study preview" />
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ───────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2024 Myanh Truong - Principal Product Designer.</p>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/myanh-truong-56998347" target="_blank" rel="noopener" aria-label="LinkedIn profile">LinkedIn</a></li>
+        <li><a href="https://dribbble.com/Meeang/shots" target="_blank" rel="noopener" aria-label="Dribbble profile">Dribbble</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // Strip view-transition-name on nav navigation so the shared-element morph
+    // doesn't fire when going back to the index page via the nav bar.
+    document.querySelectorAll('.nav-logo, .nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        const hero = document.querySelector('.hero-image');
+        if (hero) hero.style.removeProperty('view-transition-name');
+      });
+    });
+  </script>
+
+</body>
+</html>

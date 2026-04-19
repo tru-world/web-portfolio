@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About - Myanh Truong</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; background-color: #faf9f4; scrollbar-gutter: stable; }
+
+    /* ── Design Tokens ────────────────────────────────── */
+    :root {
+      --bg:          #faf9f4;
+      --default:     #30312e;
+      --sub-text:    #5e5f5b;
+      --tags:        #6d7c5e;
+      --neutral-10:  #f2f1ec;
+      --neutral-20:  #e3e3de;
+      --neutral-70:  #5e5f5b;
+      --green-20:    #d8e8c5;
+      --green-30:    #bcccaa;
+      --green-40:    #a1b090;
+      --green-60:    #6d7c5e;
+      --green-70:    #546347;
+      --green-80:    #3d4b31;
+      --brown-20:    #e9e2d3;
+      --neutral:     #f8f7f2;
+      --section-bg:  #f4f4ee;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--default);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 16px;
+      line-height: 24px;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ──────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(250, 249, 244, 0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--neutral-20);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 32px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      color: var(--default);
+      text-decoration: none;
+      line-height: 28px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+      color: var(--sub-text);
+      text-decoration: none;
+      line-height: 16px;
+      padding-bottom: 6px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--default); }
+    .nav-links a.active {
+      color: var(--default);
+      border-bottom: 2px solid var(--green-60);
+    }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--default);
+      border-radius: 2px;
+    }
+
+    /* ── Main ─────────────────────────────────────────── */
+    .main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 128px;
+      padding-bottom: 0;
+    }
+
+    /* ── Hero ─────────────────────────────────────────── */
+    .hero-section {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 48px;
+      width: 100%;
+      max-width: 1280px;
+      padding: 0 32px 58px;
+      align-items: center;
+    }
+
+    /* Portrait column */
+    .hero-portrait-col {
+      grid-column: 1 / span 5;
+    }
+
+    .portrait-inner {
+      position: relative;
+    }
+
+    .portrait-overlay {
+      position: absolute;
+      inset: -8px -8px 8px -8px;
+      background: rgba(233, 226, 211, 0.5);
+      border-radius: 48px;
+      z-index: 0;
+    }
+
+    .portrait-wrap {
+      position: relative;
+      z-index: 1;
+      border-radius: 48px;
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .portrait-wrap img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .since-badge {
+      position: absolute;
+      bottom: -24px;
+      right: -24px;
+      z-index: 2;
+      width: 128px;
+      height: 128px;
+      border-radius: 9999px;
+      background: var(--green-20);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .since-badge span {
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      text-transform: uppercase;
+      color: #48563b;
+      text-align: center;
+    }
+
+    /* Text column */
+    .hero-text-col {
+      grid-column: 6 / span 7;
+      display: flex;
+      flex-direction: column;
+      gap: 31px;
+    }
+
+    .about-tag-pill {
+      display: inline-flex;
+      align-self: flex-start;
+      padding: 6px 16px;
+      border-radius: 9999px;
+      background: rgba(216, 232, 197, 0.4);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: #556448;
+      line-height: 16px;
+    }
+
+    .hero-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(48px, 5.5vw, 72px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -1.8px;
+      color: var(--default);
+    }
+
+    .hero-heading .accent { color: var(--green-60); }
+
+    .hero-subtitle {
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 32.5px;
+      color: #5d605a;
+      max-width: 672px;
+      width: 100%;
+    }
+
+    .tool-row {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding-top: 17px;
+    }
+
+    .tool-icons {
+      display: flex;
+      align-items: center;
+      padding-right: 8px;
+    }
+
+    .tool-icon-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 9999px;
+      border: 2px solid var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: -8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .tool-icon-circle img {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      object-position: center;
+    }
+
+    .tool-icon-circle.figma-bg  { background: #e9e2d3; }
+    .tool-icon-circle.mp-bg     { background: #e8e9e2; }
+    .tool-icon-circle.rive-bg   { background: #e8e9e2; }
+
+    .tool-label {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #5d605a;
+    }
+
+    /* ── Bento Section ────────────────────────────────── */
+    .bento-section {
+      background: var(--section-bg);
+      border-radius: 48px;
+      padding: 96px 32px;
+      width: calc(100% - 64px);
+      max-width: 1216px;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    /* ── Bio Card ─────────────────────────────────────── */
+    .bio-card {
+      grid-column: 1 / span 2;
+      grid-row: 1;
+      background: var(--bg);
+      border-radius: 32px;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .bento-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.75px;
+      line-height: 36px;
+      color: #30332e;
+      margin-bottom: 24px;
+    }
+
+    .bento-body {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 29.25px;
+      color: #5d605a;
+    }
+
+    .stats-row {
+      margin-top: 48px;
+      padding-top: 33px;
+      border-top: 1px solid rgba(177, 179, 171, 0.15);
+      display: flex;
+      gap: 48px;
+    }
+
+    .stat-item { display: flex; flex-direction: column; }
+
+    .stat-number {
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 32px;
+      color: #556448;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      font-weight: 400;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+      line-height: 20px;
+      color: #5d605a;
+    }
+
+    /* ── Visual Card ──────────────────────────────────── */
+    .visual-card {
+      grid-column: 3;
+      grid-row: 1;
+      background: rgba(216, 232, 197, 0.3);
+      border-radius: 32px;
+      overflow: hidden;
+      padding: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .visual-card-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .visual-card img {
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+
+    .visual-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      color: #48563b;
+      text-align: center;
+    }
+
+    .visual-card-body {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--green-70);
+      text-align: center;
+    }
+
+    /* ── Bento bottom row ────────────────────────────── */
+    .bento-bottom-row {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 32px;
+      align-items: stretch;
+    }
+
+    /* ── Skills Card ──────────────────────────────────── */
+    .skills-card {
+      flex: 1 1 auto;
+      background: #eeeee8;
+      border-radius: 32px;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .skills-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      line-height: 32px;
+      color: #30332e;
+    }
+
+    .skills-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .skill-pill {
+      background: white;
+      border: 1px solid rgba(177, 179, 171, 0.05);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      border-radius: 9999px;
+      padding: 9px 21px;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #5d605a;
+    }
+
+    /* ── Experience Card ──────────────────────────────── */
+    .experience-card {
+      flex: 0 0 668px;
+      min-width: 668px;
+      background: white;
+      border-radius: 32px;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .experience-heading {
+      font-family: 'Manrope', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      line-height: 32px;
+      color: #30332e;
+    }
+
+    .experience-list {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .experience-item {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .exp-left {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .exp-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 9999px;
+      background: rgba(233, 226, 211, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .exp-icon img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+    }
+
+    .exp-content { flex: 1; min-width: 0; }
+
+    .exp-title {
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+      color: var(--default);
+      margin-bottom: 4px;
+    }
+
+    .exp-desc {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 24px;
+      color: var(--sub-text);
+    }
+
+    .exp-date {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 16px;
+      color: #797c75;
+      white-space: nowrap;
+      padding-top: 4px;
+      flex-shrink: 0;
+    }
+
+    /* ── CTA Section ──────────────────────────────────── */
+    .about-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      max-width: 896px;
+      width: 100%;
+      padding: 128px 32px 64px;
+      text-align: center;
+    }
+
+    .about-cta-heading {
+      font-size: clamp(36px, 4vw, 48px);
+      font-weight: 600;
+      letter-spacing: -1.2px;
+      line-height: 1;
+      color: #30332e;
+      max-width: 574px;
+    }
+
+    .about-cta-sub {
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 28px;
+      color: #5d605a;
+      padding-bottom: 16px;
+    }
+
+    .about-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 40px;
+      border-radius: 9999px;
+      background: var(--green-70);
+      color: var(--neutral);
+      font-family: 'Manrope', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      text-decoration: none;
+      box-shadow: 0 20px 25px -5px rgba(85,100,72,0.1), 0 8px 10px -6px rgba(85,100,72,0.1);
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .about-cta-btn:hover {
+      background: var(--green-80);
+      transform: translateY(-1px);
+    }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer {
+      background: var(--neutral-10);
+      border-radius: 48px 48px 0 0;
+      width: 100%;
+      margin-top: 80px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 64px 48px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .footer-copy {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: var(--sub-text);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--default); }
+
+    /* ── Responsive ───────────────────────────────────── */
+    @media (max-width: 1100px) {
+      .hero-section {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .hero-portrait-col {
+        grid-column: 1;
+        display: flex;
+        justify-content: center;
+      }
+      .portrait-inner {
+        width: 100%;
+        max-width: 400px;
+      }
+      .hero-text-col { grid-column: 1; }
+      .hero-subtitle { max-width: none; }
+
+      .bento-grid { grid-template-columns: 1fr; }
+      .bio-card { grid-column: 1; grid-row: auto; }
+      .visual-card { grid-column: 1; grid-row: auto; min-height: 300px; }
+      .bento-bottom-row { flex-wrap: wrap; }
+      .skills-card { flex: 1 1 100%; }
+      .experience-card { flex: 1 1 668px; }
+    }
+
+    @media (max-width: 900px) {
+      .nav-inner { padding: 20px 24px; }
+      .nav-links {
+        display: none; flex-direction: column; gap: 24px;
+        position: absolute; top: 100%; left: 0; right: 0;
+        background: rgba(250,249,244,0.97);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--neutral-20);
+        padding: 24px 32px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle { display: flex; }
+
+      .main { padding-top: 80px; }
+      .hero-section { padding: 0 24px 48px; }
+      .hero-heading { font-size: clamp(36px, 8vw, 56px); letter-spacing: -1px; }
+      .hero-subtitle { font-size: 18px; }
+
+      .bento-section { width: calc(100% - 48px); padding: 64px 24px; border-radius: 32px; }
+      .bento-heading { font-size: 24px; }
+      .bio-card, .skills-card, .experience-card { padding: 32px; }
+      .stats-row { gap: 24px; }
+
+      .about-cta { padding: 80px 24px 48px; }
+      .about-cta-heading { font-size: clamp(28px, 6vw, 40px); }
+
+      .footer-inner { flex-direction: column; gap: 24px; align-items: flex-start; padding: 48px 24px; }
+    }
+
+    @media (max-width: 700px) {
+      .experience-card { flex: 1 1 100%; min-width: 0; }
+    }
+
+    @media (max-width: 500px) {
+      .hero-portrait-col { max-width: 100%; }
+      .since-badge { width: 96px; height: 96px; bottom: -16px; right: -16px; }
+      .since-badge span { font-size: 10px; }
+      .stats-row { flex-direction: column; gap: 20px; }
+      .experience-item { flex-direction: column; gap: 8px; }
+      .exp-date { padding-top: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Nav ──────────────────────────────────────────── -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a class="nav-logo" href="index.html">Myanh Truong</a>
+      <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <!-- ── Hero Profile Section ─────────────────────── -->
+    <section class="hero-section" aria-label="About Myanh">
+
+      <!-- Portrait -->
+      <div class="hero-portrait-col">
+        <div class="portrait-inner">
+          <div class="portrait-overlay" aria-hidden="true"></div>
+          <div class="portrait-wrap">
+            <img src="images/about/portrait.jpg" alt="Myanh Truong - Principal Product Designer" />
+          </div>
+          <div class="since-badge" aria-label="Designing since 2019">
+            <span>Since 2019</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="hero-text-col">
+        <span class="about-tag-pill">Principal product designer</span>
+
+        <h1 class="hero-heading">
+          Craft that holds up when things get <span class="accent">complicated.</span>
+        </h1>
+
+        <p class="hero-subtitle">I'm a principal product designer who specializes in building at the intersection of complexity and scale - two-sided platforms, operational tools, and consumer products that have to work together. I've spent the last few years as the founding designer on Toast Tables, owning both sides of the product from 0→1 through scale.</p>
+
+        <div class="tool-row">
+          <div class="tool-icons" aria-hidden="true">
+            <div class="tool-icon-circle figma-bg">
+              <img src="images/about/figma-icon.svg" alt="Figma" />
+            </div>
+            <div class="tool-icon-circle mp-bg">
+              <img src="images/about/magic-patterns-icon.jpg" alt="Magic Patterns" />
+            </div>
+            <div class="tool-icon-circle rive-bg">
+              <img src="images/about/Claude.svg" alt="Claude" />
+            </div>
+          </div>
+          <span class="tool-label">Figma, Magic Patterns, Rive, and Claude code</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── Bento Bio & Experience ────────────────────── -->
+    <div class="bento-section" aria-label="Bio and experience">
+      <div class="bento-grid">
+
+        <!-- Bio Card -->
+        <div class="bio-card">
+          <div>
+            <h2 class="bento-heading">The Philosophy</h2>
+            <p class="bento-body">I believe the best design is almost invisible, not because it's simple, but because it's been thought through completely. I care about the edge cases, the operational constraints, the moment a user is juggling three things at once. That's where design either holds up or falls apart.</p>
+          </div>
+          <div class="stats-row">
+            <div class="stat-item">
+              <span class="stat-number">04</span>
+              <span class="stat-label">0→1 Product launches</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">03</span>
+              <span class="stat-label">Design Systems built</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">07</span>
+              <span class="stat-label">Years Experience</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Card -->
+        <div class="visual-card" aria-hidden="true">
+          <div class="visual-card-inner">
+            <img src="images/about/compass-icon.svg" alt="" />
+            <p class="visual-card-title">When craft meets product</p>
+            <p class="visual-card-body">Craft isn't decoration. It's how trust is built. Quality of the details signals the quality of the thinking. Good design earns confidence.</p>
+          </div>
+        </div>
+
+        <!-- Bottom row: Skills + Experience -->
+        <div class="bento-bottom-row">
+
+        <!-- Skills Card -->
+        <div class="skills-card">
+          <h2 class="skills-heading">Expertise</h2>
+          <div class="skills-tags">
+            <span class="skill-pill">0→1 Product</span>
+            <span class="skill-pill">Systems Design</span>
+            <span class="skill-pill">High Craft UI</span>
+            <span class="skill-pill">Prototyping</span>
+            <span class="skill-pill">Mobile</span>
+            <span class="skill-pill">Responsive Web</span>
+            <span class="skill-pill">Storytelling</span>
+            <span class="skill-pill">B2B &amp; B2C</span>
+            <span class="skill-pill">Design Strategy</span>
+            <span class="skill-pill">Operational UX</span>
+          </div>
+        </div>
+
+        <!-- Experience Card -->
+        <div class="experience-card">
+          <h2 class="experience-heading">The Journey</h2>
+          <div class="experience-list">
+
+            <div class="experience-item">
+              <div class="exp-left">
+                <div class="exp-icon">
+                  <img src="images/about/Toast-logo.svg" alt="Toast" />
+                </div>
+                <div class="exp-content">
+                  <p class="exp-title">Principal Product Designer - Toast Inc.</p>
+                  <p class="exp-desc">Sole designer on Toast Tables - own 3 different surfaces (host app, consumer web, and operational management) from 0→1 through scale, across reservation, waitlist, and ticketed events.</p>
+                </div>
+              </div>
+              <span class="exp-date">2022 - PRESENT</span>
+            </div>
+
+            <div class="experience-item">
+              <div class="exp-left">
+                <div class="exp-icon">
+                  <img src="images/about/facebook-icon.png" alt="Facebook" />
+                </div>
+                <div class="exp-content">
+                  <p class="exp-title">Product Designer - Facebook</p>
+                  <p class="exp-desc">Designed 0→1 community and expert discovery features for Facebook Groups, and built scalable ad experiences for one of the world's largest advertising platforms.</p>
+                </div>
+              </div>
+              <span class="exp-date">2021 - 2022</span>
+            </div>
+
+            <div class="experience-item">
+              <div class="exp-left">
+                <div class="exp-icon">
+                  <img src="images/about/Expedia-group.svg" alt="Expedia" />
+                </div>
+                <div class="exp-content">
+                  <p class="exp-title">Product Designer - Expedia</p>
+                  <p class="exp-desc">Rebuilt Hotwire's consumer design language from the ground up, establishing the foundational design system across hotel booking on mobile, web, and desktop.</p>
+                </div>
+              </div>
+              <span class="exp-date">2020 - 2021</span>
+            </div>
+
+          </div>
+        </div>
+
+        </div><!-- /bento-bottom-row -->
+
+      </div>
+    </div>
+
+    <!-- ── CTA ───────────────────────────────────────── -->
+    <div class="about-cta">
+      <h2 class="about-cta-heading">Good problems deserve thoughtful design.</h2>
+      <p class="about-cta-sub">Open to Principal, Staff, or Lead product design roles.</p>
+      <a class="about-cta-btn" href="contact.html">
+        Start a conversation &nbsp;→
+      </a>
+    </div>
+
+  </main>
+
+  <!-- ── Footer ───────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2024 Myanh Truong - Principal Product Designer.</p>
+      <ul class="footer-links">
+        <li><a href="https://www.linkedin.com/in/myanh-truong-56998347" target="_blank" rel="noopener" aria-label="LinkedIn profile">LinkedIn</a></li>
+        <li><a href="https://dribbble.com/Meeang/shots" target="_blank" rel="noopener" aria-label="Dribbble profile">Dribbble</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById('navToggle');
+    const links  = document.getElementById('navLinks');
+    toggle.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open);
+    });
+    links.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        links.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  </script>
+
+</body>
+</html>
