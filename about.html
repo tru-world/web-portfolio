@@ -212,6 +212,21 @@
       line-height: 16px;
     }
 
+    /* ── Page load fade-up ───────────────────────────── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-portrait-col { animation: fade-up 0.55s ease-out 0.1s both; }
+    .about-tag-pill    { animation: fade-up 0.5s ease-out 0.2s both; }
+    .hero-heading      { animation: fade-up 0.5s ease-out 0.3s both; }
+    .hero-subtitle     { animation: fade-up 0.5s ease-out 0.4s both; }
+    .tool-row          { animation: fade-up 0.5s ease-out 0.5s both; }
+    .bento-section     { animation: fade-up 0.6s ease-out 0.6s both; }
+    .about-cta         { animation: fade-up 0.6s ease-out 0.75s both; }
+    .footer            { animation: fade-up 0.6s ease-out 0.85s both; }
+
     .hero-heading {
       font-family: 'Manrope', sans-serif;
       font-size: clamp(48px, 5.5vw, 72px);
