@@ -205,14 +205,42 @@
       line-height: 16px;
     }
 
+    @keyframes hero-shine {
+      0%   { background-position: 100% center; }
+      100% { background-position: 0% center; }
+    }
+
     .hero-heading {
       font-family: 'Manrope', sans-serif;
       font-size: clamp(48px, 6vw, 72px);
       font-weight: 800;
       line-height: 1;
       letter-spacing: -1.8px;
-      color: var(--default);
+      background: linear-gradient(
+        90deg,
+        var(--default) 42%,
+        rgba(255, 255, 255, 0.78) 50%,
+        var(--default) 58%
+      );
+      background-size: 400% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fade-up 0.5s ease-out 0.1s both,
+                 hero-shine 1.4s linear 0.3s 1 both;
     }
+
+    /* ── Page load fade-up ───────────────────────────── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-tagline  { animation: fade-up 0.5s ease-out 0.1s both; }
+    .hero-body     { animation: fade-up 0.5s ease-out 0.25s both; }
+    .gallery       { animation: fade-up 0.6s ease-out 0.5s both; }
+    .cta-section   { animation: fade-up 0.6s ease-out 0.7s both; }
+    .footer        { animation: fade-up 0.6s ease-out 0.85s both; }
 
     .hero-body {
       font-size: 16px;
@@ -606,7 +634,7 @@
       <section class="hero">
         <p class="hero-tagline">Principal Product Designer</p>
         <h1 class="hero-heading">Make it make sense.<br>Then make it scale.</h1>
-        <p class="hero-body">Designing connected systems across consumer and business products-focused on clarity, usability, and scale.</p>
+        <p class="hero-body">Designing connected systems across consumer and business products-focused on craft, clarity, usability, and scale.</p>
       </section>
 
       <!-- Gallery -->
