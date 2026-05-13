@@ -212,20 +212,43 @@
       line-height: 16px;
     }
 
-    /* ── Page load fade-up ───────────────────────────── */
+    /* ── Page load animations ────────────────────────── */
     @keyframes fade-up {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .hero-portrait-col { animation: fade-up 0.55s ease-out 0.1s both; }
-    .about-tag-pill    { animation: fade-up 0.5s ease-out 0.2s both; }
-    .hero-heading      { animation: fade-up 0.5s ease-out 0.3s both; }
-    .hero-subtitle     { animation: fade-up 0.5s ease-out 0.4s both; }
-    .tool-row          { animation: fade-up 0.5s ease-out 0.5s both; }
-    .bento-section     { animation: fade-up 0.6s ease-out 0.6s both; }
-    .about-cta         { animation: fade-up 0.6s ease-out 0.75s both; }
-    .footer            { animation: fade-up 0.6s ease-out 0.85s both; }
+    @keyframes portrait-roll-in {
+      from {
+        opacity: 0;
+        transform: translateX(-48px) scale(0.88) rotate(-4deg);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes badge-pop-in {
+      from {
+        opacity: 0;
+        transform: translateX(-24px) scale(0.7);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    .portrait-inner    { animation: portrait-roll-in 0.75s cubic-bezier(0.25, 0, 0, 1) 0.1s both; }
+    .since-badge       { animation: badge-pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s both; }
+    .about-tag-pill    { animation: fade-up 0.5s ease-out 0.4s both; }
+    .hero-heading      { animation: fade-up 0.5s ease-out 0.5s both; }
+    .hero-subtitle     { animation: fade-up 0.5s ease-out 0.6s both; }
+    .tool-row          { animation: fade-up 0.5s ease-out 0.7s both; }
+    .bento-section     { animation: fade-up 0.6s ease-out 0.75s both; }
+    .about-cta         { animation: fade-up 0.6s ease-out 0.85s both; }
+    .footer            { animation: fade-up 0.6s ease-out 0.95s both; }
 
     .hero-heading {
       font-family: 'Manrope', sans-serif;
